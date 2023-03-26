@@ -18,7 +18,7 @@ function NewWallet({ navigation }) {
 
         <View style={{ alignItems: 'center', marginTop: -20 }}>
           <View style={styles.inputView}>
-            <TextInput style={styles.TextInput} placeholder="Password." placeholderTextColor="#003f5c" secureTextEntry={true} onChangeText={(password) => setPassword(password)} />
+            <TextInput style={styles.TextInput} placeholder="Username." placeholderTextColor="#003f5c" secureTextEntry={true} onChangeText={(password) => setPassword(password)} />
           </View>
           <View style={styles.inputView}>
             <TextInput style={styles.TextInput} placeholder="Password." placeholderTextColor="#003f5c" secureTextEntry={true} onChangeText={(password) => setPassword(password)} />
