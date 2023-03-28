@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import globalStyles from '../../../style.global';
 
 function WellCome({ navigation }) {
   return (
-    <View style={styles.container}>
+    <View style={{ ...globalStyles.container, ...globalStyles.justifyContentSpaceAround }}>
       <View>
         <Text style={{ fontSize: 25, fontWeight: 'bold', color: 'white' }}>bubble</Text>
       </View>
@@ -17,7 +18,7 @@ function WellCome({ navigation }) {
         <TouchableOpacity style={styles.carouselControl}></TouchableOpacity>
       </View>
       <View>
-        <LinearGradient colors={['#0014FF', '#8020EF', '#FF2CDF']} start={{ x: 0, y: 1 }} end={{ x: 1, y: 1 }} style={styles.button}>
+        <LinearGradient colors={['#0014FF', '#8020EF', '#FF2CDF']} start={{ x: 0, y: 1 }} end={{ x: 1, y: 1 }} style={globalStyles.buttonLinear}>
           <TouchableOpacity onPress={() => navigation.navigate('newWallet')}>
             <Text style={{ color: 'white' }}>Tạo ví mới</Text>
           </TouchableOpacity>
@@ -28,13 +29,6 @@ function WellCome({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#221F3A',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
   carousel: {
     flexDirection: 'row',
   },
@@ -44,12 +38,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 50,
     marginHorizontal: 5,
-  },
-
-  button: {
-    paddingHorizontal: 50,
-    borderRadius: 50,
-    paddingVertical: 10,
   },
 });
 export default WellCome;

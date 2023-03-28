@@ -1,31 +1,53 @@
 import React, { useState } from 'react';
 import { View, Image, StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import Icon from 'react-native-vector-icons/Entypo';
+import globalStyles from '../../../style.global';
 
 function NewWallet({ navigation }) {
   const [password, setPassword] = useState();
   const [passwordConfirm, setpasswordConfirm] = useState();
 
+  const createWallet = () => {
+    // logic login form
+    // .....
+    // login success
+    navigation.navigate('login');
+  };
   return (
-    <View style={styles.container}>
-      <View style={{ marginVertical: 100, display: 'flex', justifyContent: 'space-between', height: '80%' }}>
-        <View style={{ alignItems: 'center' }}>
-          <Text style={{ fontSize: 25, fontWeight: 'bold', color: 'white' }}>Tạo ví mới</Text>
+    <View style={{ ...globalStyles.container, ...globalStyles.positionRelative }}>
+      <View style={{ marginVertical: 100, display: 'flex', height: '80%' }}>
+        <View style={{ alignItems: 'center', flexDirection: 'row', ...globalStyles.positionAbsolute, right: 30 }}>
+          <Icon.Button
+            name="chevron-thin-left"
+            size={25}
+            color={'#FF2CDF'}
+            backgroundColor={'#221F3A'}
+            onPress={() => {
+              navigation.navigate('WellCome');
+            }}
+          ></Icon.Button>
+          <Text style={{ fontSize: 25, fontWeight: 'bold', color: 'white', marginLeft: 40 }}>Tạo ví mới</Text>
         </View>
-        <View style={{ alignItems: 'center' }}>
+        <View style={{ alignItems: 'center', marginTop: 80 }}>
           <Image source={require('../../../assets/bubble.png')} />
         </View>
-
-        <View style={{ alignItems: 'center', marginTop: -20 }}>
+        <View style={{ alignItems: 'center', marginTop: -20, ...globalStyles.positionAbsolute, top: 350, left: -50 }}>
           <View style={styles.inputView}>
-            <TextInput style={styles.TextInput} placeholder="Password." placeholderTextColor="#003f5c" secureTextEntry={true} onChangeText={(password) => setPassword(password)} />
+            <TextInput style={styles.TextInput} placeholder="Mật khẩu." placeholderTextColor="gray" secureTextEntry={true} onChangeText={(password) => setPassword(password)} />
           </View>
           <View style={styles.inputView}>
-            <TextInput style={styles.TextInput} placeholder="Password." placeholderTextColor="#003f5c" secureTextEntry={true} onChangeText={(password) => setPassword(password)} />
+            <TextInput
+              style={styles.TextInput}
+              placeholder="Nhập lại mật khẩu."
+              placeholderTextColor="gray"
+              secureTextEntry={true}
+              onChangeText={(password) => setPassword(password)}
+            />
           </View>
 
           <LinearGradient colors={['#FF2CDF', '#8020EF', '#0014FF']} start={{ x: 0, y: 1 }} end={{ x: 1, y: 1 }} style={styles.button}>
-            <TouchableOpacity onPress={() => navigation.navigate('newWallet')}>
+            <TouchableOpacity onPress={() => createWallet()}>
               <Text style={{ color: 'white', fontSize: 17 }}>Tạo ví</Text>
             </TouchableOpacity>
           </LinearGradient>
@@ -55,9 +77,11 @@ const styles = StyleSheet.create({
   },
   TextInput: {
     height: 50,
-    flex: 1,
     padding: 10,
     marginLeft: 20,
+    color: 'white',
+    textAlign: 'center',
+    alignItems: 'center',
   },
   button: {
     width: '50%',

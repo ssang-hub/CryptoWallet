@@ -19,11 +19,31 @@ const globalStyles = StyleSheet.create({
   color_primary: {
     color: '#0d6efd',
   },
+  positionRelative: {
+    position: 'relative',
+  },
+  positionAbsolute: {
+    position: 'absolute',
+  },
   h1: {},
   h2: {},
   h3: { fontSize: 25, fontWeight: 'bold' },
   h4: { fontSize: 20, fontWeight: 'bold' },
   h5: { fontSize: 15, fontWeight: 'bold' },
   h6: {},
+  container: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#221F3A',
+    alignItems: 'center',
+  },
+  justifyContentSpaceAround: {
+    justifyContent: 'space-around',
+  },
+  buttonLinear: {
+    paddingHorizontal: 50,
+    borderRadius: 50,
+    paddingVertical: 10,
+  },
 });
 export default globalStyles;
