@@ -3,9 +3,10 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'reac
 import { LinearGradient } from 'expo-linear-gradient';
 
 import globalStyles from '../../../style.global';
-function Login() {
+function Login({ navigation }) {
   const handleLogin = () => {
     // logic code
+    navigation.navigate('history');
   };
   return (
     <View style={{ ...globalStyles.container, ...globalStyles.justifyContentSpaceAround, ...globalStyles.positionRelative }}>
@@ -20,7 +21,7 @@ function Login() {
       </View>
       <View>
         <LinearGradient colors={['#0014FF', '#8020EF', '#FF2CDF']} start={{ x: 0, y: 1 }} end={{ x: 1, y: 1 }} style={globalStyles.buttonLinear}>
-          <TouchableOpacity onPress={() => handleLogin}>
+          <TouchableOpacity onPress={() => handleLogin()}>
             <Text style={{ color: 'white' }}>Đăng Nhập</Text>
           </TouchableOpacity>
         </LinearGradient>
