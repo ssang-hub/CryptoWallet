@@ -3,9 +3,11 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'reac
 import { LinearGradient } from 'expo-linear-gradient';
 
 import globalStyles from '../../../style.global';
+import { unlockWallet } from '../../main/wallet';
 function Login({ navigation }) {
-  const handleLogin = () => {
+  const handleLogin = async () => {
     // logic code
+
     navigation.navigate('history');
   };
   return (

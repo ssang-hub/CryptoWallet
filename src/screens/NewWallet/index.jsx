@@ -3,12 +3,14 @@ import { View, Image, StyleSheet, Text, TouchableOpacity, TextInput } from 'reac
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/Entypo';
 import globalStyles from '../../../style.global';
+import { newWallet, unlockWallet } from '../../main/wallet';
+
 
 function NewWallet({ navigation }) {
   const [password, setPassword] = useState();
   const [passwordConfirm, setpasswordConfirm] = useState();
 
-  const createWallet = () => {
+  const createWallet = async () => {
     // logic login form
     // .....
     // login success
