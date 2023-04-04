@@ -6,7 +6,11 @@ import { CURRENT_WALLET } from '../constants/storage';
 
 const newWallet = async (password: string) => {
   const wallet = ethers.Wallet.createRandom();
-  const walletJson = await wallet.encrypt(password);
+  const walletJson = await wallet.encrypt(password, {
+    scrypt: {
+      N: 64,
+    },
+  });
   AsyncStorage.setItem(CURRENT_WALLET, walletJson);
 };
 
