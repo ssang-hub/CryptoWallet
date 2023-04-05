@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { LineChart } from 'react-native-chart-kit';
 import { View, Dimensions } from 'react-native';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 export default function ExchangeChart() {
   return (
@@ -21,9 +22,9 @@ export default function ExchangeChart() {
         height={220}
         yAxisInterval={1}
         chartConfig={{
-          backgroundColor: '#e26a00',
-          backgroundGradientFrom: '#37307080',
-          backgroundGradientTo: '#373070e6',
+          backgroundColor: '#221F3A',
+          backgroundGradientFrom: '#221F3A',
+          backgroundGradientTo: '#221F3A',
           decimalPlaces: 2,
           color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
           style: {

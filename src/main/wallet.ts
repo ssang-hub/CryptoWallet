@@ -5,9 +5,22 @@ import { ethers } from 'ethers';
 import { CURRENT_WALLET } from '../constants/storage';
 
 const newWallet = async (password: string) => {
-  const wallet = ethers.Wallet.createRandom();
-  const walletJson = await wallet.encrypt(password);
-  AsyncStorage.setItem(CURRENT_WALLET, walletJson);
+  try {
+    const wallet = ethers.Wallet.createRandom();
+    console.log(wallet);
+
+    console.log(wallet.encrypt);
+    const walletJson = await wallet.encrypt(password, {
+      scrypt: {
+        N: 64,
+      },
+    });
+    console.log(walletJson);
+
+    // await AsyncStorage.setItem(CURRENT_WALLET, walletJson);
+  } catch (error) {
+    console.log('error:', error);
+  }
 };
 
 const checkIfExistingWallet = async () => {
@@ -19,6 +32,8 @@ const checkIfExistingWallet = async () => {
 const unlockWallet = async (password: string): Promise<'success' | 'fail'> => {
   try {
     const walletJson = await AsyncStorage.getItem(CURRENT_WALLET);
+    console.log(walletJson);
+
     await ethers.Wallet.fromEncryptedJson(walletJson, password);
     return 'success';
   } catch (e) {

@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import globalStyles from '../../../style.global';
+import { checkIfExistingWallet } from '../../main/wallet';
 
 function WellCome({ navigation }) {
+  useEffect(() => {
+    const check = async () => {
+      try {
+        const tesst = await checkIfExistingWallet();
+        console.log(tesst);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    check();
+  }, []);
   return (
     <View style={{ ...globalStyles.container, ...globalStyles.justifyContentSpaceAround }}>
       <View>

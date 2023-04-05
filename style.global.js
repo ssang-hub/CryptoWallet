@@ -45,5 +45,17 @@ const globalStyles = StyleSheet.create({
     borderRadius: 50,
     paddingVertical: 10,
   },
+  shadowBox: {
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    borderRadius: 50,
+  },
+  centerInView: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
 });
 export default globalStyles;

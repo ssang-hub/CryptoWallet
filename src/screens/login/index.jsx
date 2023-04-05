@@ -3,12 +3,16 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'reac
 import { LinearGradient } from 'expo-linear-gradient';
 
 import globalStyles from '../../../style.global';
-import { unlockWallet } from '../../main/wallet';
+// import { unlockWallet } from '../../main/wallet';
 function Login({ navigation }) {
   const handleLogin = async () => {
     // logic code
-
-    navigation.navigate('history');
+    try {
+      // await unlockWallet();
+      navigation.navigate('history');
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <View style={{ ...globalStyles.container, ...globalStyles.justifyContentSpaceAround, ...globalStyles.positionRelative }}>

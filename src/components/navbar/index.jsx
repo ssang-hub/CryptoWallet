@@ -1,12 +1,13 @@
 import React from 'react';
 import globalStyles from '../../../style.global';
-import { View, Image, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, Image, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native';
+const windowWidth = Dimensions.get('window').width;
 
 const NavBar = ({ navigation }) => {
   return (
     <View>
       <View style={{ ...globalStyles.positionRelative }}>
-        <Image source={require('../../../assets/Rectangle.png')}></Image>
+        <Image style={{ width: windowWidth }} source={require('../../../assets/Rectangle.png')}></Image>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', ...globalStyles.positionAbsolute, bottom: 5, width: '100%' }}>
           <View style={{ flexDirection: 'row' }}>
             <TouchableOpacity

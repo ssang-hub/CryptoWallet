@@ -5,16 +5,17 @@ import Icon from 'react-native-vector-icons/Entypo';
 import globalStyles from '../../../style.global';
 import { newWallet, unlockWallet } from '../../main/wallet';
 
-
 function NewWallet({ navigation }) {
-  const [password, setPassword] = useState();
-  const [passwordConfirm, setpasswordConfirm] = useState();
-
   const createWallet = async () => {
+    try {
+      // await newWallet('@Sangat148');
+      navigation.navigate('login');
+    } catch (error) {
+      console.log(error);
+    }
     // logic login form
     // .....
     // login success
-    navigation.navigate('login');
   };
   return (
     <View style={{ ...globalStyles.container, ...globalStyles.positionRelative }}>
