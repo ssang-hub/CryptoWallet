@@ -1,8 +1,7 @@
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-get-random-values';
+// import 'react-native-get-random-values';
 
-// Import the the ethers shims (**BEFORE** ethers)
-import '@ethersproject/shims';
+// // Import the the ethers shims (**BEFORE** ethers)
+// import '@ethersproject/shims';
 
 import { View, StyleSheet } from 'react-native';
 import WellCome from './src/screens/Wellcome';
