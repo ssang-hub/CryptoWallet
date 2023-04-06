@@ -9,7 +9,7 @@ function Login({ navigation }) {
     // logic code
     try {
       // await unlockWallet();
-      navigation.navigate('history');
+      navigation.navigate('home');
     } catch (error) {
       console.log(error);
     }

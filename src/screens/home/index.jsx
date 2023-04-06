@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, Dimensions, Image, TouchableOpacity, Button } from 'react-native';
 import { useState } from 'react';
+import NavBar from '../../components/navbar';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -45,7 +46,9 @@ function HomeScreen({ navigation }) {
             </View>
           </View>
         </View>
-        <View style={styles.bottomBar}></View>
+        <View>
+          <NavBar navigation={navigation} />
+        </View>
       </View>
     </View>
   );
@@ -111,11 +114,6 @@ const styles = StyleSheet.create({
   body: {
     flex: 9,
     alignItems: 'center',
-  },
-
-  bottomBar: {
-    flex: 1,
-    backgroundColor: 'red',
   },
 
   imageBG: {

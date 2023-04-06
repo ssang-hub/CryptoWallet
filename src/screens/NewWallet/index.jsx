@@ -8,7 +8,7 @@ import { newWallet, unlockWallet } from '../../main/wallet';
 function NewWallet({ navigation }) {
   const createWallet = async () => {
     try {
-      // await newWallet('@Sangat148');
+      await newWallet('@Sangat148');
       navigation.navigate('login');
     } catch (error) {
       console.log(error);
