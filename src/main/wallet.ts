@@ -23,7 +23,7 @@ const checkIfExistingWallet = async () => {
 const unlockWallet = async (password: string): Promise<'success' | 'fail'> => {
   try {
     const walletJson = await AsyncStorage.getItem(CURRENT_WALLET);
-
+    console.log(walletJson);
     await ethers.Wallet.fromEncryptedJson(walletJson, password);
     return 'success';
   } catch (e) {
