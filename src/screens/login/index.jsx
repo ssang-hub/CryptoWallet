@@ -1,34 +1,57 @@
-import React from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import globalStyles from '../../../style.global';
-// import { unlockWallet } from '../../main/wallet';
+import { unlockWallet } from '../../main/wallet';
 function Login({ navigation }) {
-  const handleLogin = async () => {
-    // logic code
-    try {
-      // await unlockWallet();
-      navigation.navigate('home');
-    } catch (error) {
-      console.log(error);
+  const [password, setPassword] = useState('');
+  const [isLoading, setLoading] = useState(false);
+  useEffect(() => {
+    if (isLoading) {
+      const handleLogin = async () => {
+        try {
+          const loginResult = await unlockWallet(password);
+          loginResult === 'success' ? navigation.navigate('home') : console.log('sai mat khau');
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      handleLogin();
     }
-  };
+  }, [isLoading]);
+
   return (
     <View style={{ ...globalStyles.container, ...globalStyles.justifyContentSpaceAround, ...globalStyles.positionRelative }}>
       <View style={{ ...globalStyles.positionAbsolute, top: 50 }}>
         <Text style={{ color: 'white', fontSize: 17 }}>Đăng Nhập</Text>
       </View>
       <View style={styles.inputView}>
-        <TextInput style={styles.TextInput} placeholder="Mật khẩu." placeholderTextColor="gray" secureTextEntry={true} />
+        <TextInput
+          style={styles.TextInput}
+          disableFullscreenUI={true}
+          placeholder="Mật khẩu."
+          editable={!isLoading}
+          placeholderTextColor="gray"
+          secureTextEntry={true}
+          onChangeText={(password) => {
+            setPassword(password);
+          }}
+        />
       </View>
       <View>
         <Image source={require('../../../assets/bubble.png')} />
       </View>
       <View>
         <LinearGradient colors={['#0014FF', '#8020EF', '#FF2CDF']} start={{ x: 0, y: 1 }} end={{ x: 1, y: 1 }} style={globalStyles.buttonLinear}>
-          <TouchableOpacity onPress={() => handleLogin()}>
-            <Text style={{ color: 'white' }}>Đăng Nhập</Text>
+          <TouchableOpacity onPress={() => setLoading(true)}>
+            {isLoading ? (
+              <View>
+                <ActivityIndicator size="small" />
+              </View>
+            ) : (
+              <Text style={{ color: 'white' }}>Đăng Nhập</Text>
+            )}
           </TouchableOpacity>
         </LinearGradient>
       </View>

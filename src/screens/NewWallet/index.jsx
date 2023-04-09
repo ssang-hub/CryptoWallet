@@ -1,25 +1,27 @@
-import React, { useState } from 'react';
-import { View, Image, StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { View, Image, StyleSheet, Text, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/Entypo';
 import globalStyles from '../../../style.global';
-import { newWallet, unlockWallet } from '../../main/wallet';
+import { newWallet } from '../../main/wallet';
 
 function NewWallet({ navigation }) {
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [passwordConfirm, setPasswordConfirm] = useState();
+
   const createWallet = async () => {
     try {
-      await newWallet('@Sangat148');
+      await newWallet(password);
       navigation.navigate('login');
     } catch (error) {
       console.log(error);
     }
-    // logic login form
-    // .....
-    // login success
   };
+
   return (
     <View style={{ ...globalStyles.container, ...globalStyles.positionRelative }}>
-      <View style={{ marginVertical: 100, display: 'flex', height: '80%' }}>
+      <View style={{ marginVertical: 100, height: '80%' }}>
         <View style={{ alignItems: 'center', flexDirection: 'row', ...globalStyles.positionAbsolute, right: 30 }}>
           <Icon.Button
             name="chevron-thin-left"
@@ -45,13 +47,18 @@ function NewWallet({ navigation }) {
               placeholder="Nhập lại mật khẩu."
               placeholderTextColor="gray"
               secureTextEntry={true}
-              onChangeText={(password) => setPassword(password)}
+              onChangeText={(password) => setPasswordConfirm(password)}
             />
           </View>
-
           <LinearGradient colors={['#FF2CDF', '#8020EF', '#0014FF']} start={{ x: 0, y: 1 }} end={{ x: 1, y: 1 }} style={styles.button}>
-            <TouchableOpacity onPress={() => createWallet()}>
-              <Text style={{ color: 'white', fontSize: 17 }}>Tạo ví</Text>
+            <TouchableOpacity disabled={isLoading || password !== passwordConfirm} onPress={() => createWallet()}>
+              {isLoading ? (
+                <View>
+                  <ActivityIndicator size="small" />
+                </View>
+              ) : (
+                <Text style={{ color: 'white', fontSize: 17 }}>Tạo ví</Text>
+              )}
             </TouchableOpacity>
           </LinearGradient>
         </View>
@@ -87,6 +94,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
+    position: 'relative',
     width: '50%',
     alignItems: 'center',
     borderRadius: 30,

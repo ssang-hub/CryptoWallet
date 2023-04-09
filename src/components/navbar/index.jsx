@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import globalStyles from '../../../style.global';
 import { View, Image, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native';
+import QRCodeContainer from '../QRCode';
 const windowWidth = Dimensions.get('window').width;
 
 const NavBar = ({ navigation }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+
   return (
     <View>
       <View style={{ ...globalStyles.positionRelative }}>
@@ -23,7 +26,7 @@ const NavBar = ({ navigation }) => {
             </TouchableOpacity>
           </View>
           <View style={{ ...globalStyles.positionAbsolute, left: '45%', bottom: '70%' }}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
               <Image source={require('../../../assets/nav5.png')} />
               <Image style={{ ...globalStyles.positionAbsolute, left: '27%', top: '30%' }} source={require('../../../assets/nav6.png')} />
             </TouchableOpacity>
@@ -39,7 +42,7 @@ const NavBar = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('');
+                navigation.navigate('wallets');
               }}
             >
               <Image style={styles.navItem} source={require('../../../assets/nav4.png')} />
@@ -58,6 +61,9 @@ const NavBar = ({ navigation }) => {
           <Icon.Button name="person" size={25} color={'#FF2CDF'} backgroundColor={'#221F3A'}></Icon.Button>
         </TouchableOpacity>
       </View> */}
+      <View style={{ position: 'absolute' }}>
+        <QRCodeContainer modalVisible={modalVisible} setModalVisible={setModalVisible} />
+      </View>
     </View>
   );
 };

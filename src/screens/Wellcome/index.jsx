@@ -8,8 +8,8 @@ function WellCome({ navigation }) {
   useEffect(() => {
     const check = async () => {
       try {
-        const tesst = await checkIfExistingWallet();
-        console.log(tesst);
+        const check = await checkIfExistingWallet();
+        check && navigation.navigate('login');
       } catch (error) {
         console.log(error);
       }

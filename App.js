@@ -11,8 +11,8 @@ import History from './src/screens/history';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Statistic from './src/screens/statistic';
-import HomeScreen from './src/screens/home';
-
+import HomeScreen from './src/screens/HomeScreen/HomeScreen';
+import Wallets from './src/screens/Wallets';
 // import Screen1 from './Screen1';
 // import Screen2 from './Screen2';
 
@@ -27,6 +27,7 @@ export default function App() {
         <Stack.Screen name="login" component={Login} />
         <Stack.Screen name="history" component={History} />
         <Stack.Screen name="statistic" component={Statistic} />
+        <Stack.Screen name="wallets" component={Wallets} />
       </Stack.Navigator>
     </NavigationContainer>
   );
