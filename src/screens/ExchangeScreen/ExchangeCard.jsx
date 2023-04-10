@@ -5,14 +5,9 @@ import {
     StyleSheet,
     Dimensions,
     TouchableOpacity,
-    TextInput,
-    FlatList,
     Image,
-    Button,
-    Modal
 } from 'react-native'
 import { LinearGradient } from "expo-linear-gradient"
-import DropDownPicker from 'react-native-dropdown-picker';
 import DropDownList from "./DropDownList";
 import ExchangeTextFeild from "./ExchangeTextFeild";
 import Switch from "./Switch";
@@ -52,7 +47,7 @@ const ExchangeCard = () => {
                 <View style={styles.input}>
 
                     <ExchangeTextFeild
-                        style={{ marginTop: 30 }}
+                        style={{ marginTop: 15 }}
                         value={coinSelected}
                         showList={coinListOpen}
                         setShowList={setCoinListOpen}
@@ -67,24 +62,8 @@ const ExchangeCard = () => {
                         placeholder={'0.00'}
                         editable={false} />
 
-                    {coinListOpen && (<DropDownList
-                        style={{ marginTop: 36 }}
-                        data={coinList}
-                        show={coinListOpen}
-                        setShow={setCoinListOpen}
-                        setSelected={setCoinSelected} />)}
-
-                    {currencyListOpen && (<DropDownList
-                        style={{ marginTop: 44 + 30 + 30 }}
-                        data={currencyList}
-                        show={currencyListOpen}
-                        setShow={setCurrencyListOpen}
-                        setSelected={setCurrencySelected} />)}
-
-                </View>
-                <View style={styles.containerButton}>
                     <TouchableOpacity
-                        style={{ flex: 1 }}
+                        style={styles.containerButton}
                         onPress={() => {
 
                         }}>
@@ -99,6 +78,24 @@ const ExchangeCard = () => {
 
                         </LinearGradient>
                     </TouchableOpacity>
+
+                    {coinListOpen && (<DropDownList
+                        style={{ marginTop: 21 }}
+                        data={coinList}
+                        show={coinListOpen}
+                        setShow={setCoinListOpen}
+                        setSelected={setCoinSelected} />)}
+
+                    {currencyListOpen && (<DropDownList
+                        style={{ marginTop: 89 }}
+                        data={currencyList}
+                        show={currencyListOpen}
+                        setShow={setCurrencyListOpen}
+                        setSelected={setCurrencySelected} />)}
+
+                </View>
+                <View style={styles.containerButton}>
+
                 </View>
             </View>
         </View>

@@ -29,8 +29,7 @@ const Switch = ({ isLeft, setLeft }) => {
 
 const styles = StyleSheet.create({
     switch: {
-        marginTop: 30,
-        marginBottom: 15,
+        margin: 30,
         height: 40,
         width: 174,
         borderRadius: 25,

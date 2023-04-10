@@ -6,7 +6,7 @@ const windowWidth = Dimensions.get('window').width;
 const NavBar = ({ navigation }) => {
   return (
     <View>
-      <View style={{ ...globalStyles.positionRelative }}>
+      <View style={{}}>
         <Image style={{ width: windowWidth }} source={require('../../../assets/Rectangle.png')}></Image>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', ...globalStyles.positionAbsolute, bottom: 5, width: '100%' }}>
           <View style={{ flexDirection: 'row' }}>
