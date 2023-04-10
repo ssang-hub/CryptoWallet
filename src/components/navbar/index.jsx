@@ -18,12 +18,12 @@ const NavBar = ({ navigation }) => {
             >
               <Image style={styles.navItem} source={require('../../../assets/nav1.png')} />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => { navigation.navigate('ExchangeScreen') }}>
               <Image style={styles.navItem} source={require('../../../assets/nav2.png')} />
-            </TouchableOpacity>
+            </TouchableOpacity >
           </View>
           <View style={{ ...globalStyles.positionAbsolute, left: '45%', bottom: '70%' }}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => { navigation.navigate('HomeScreen') }}>
               <Image source={require('../../../assets/nav5.png')} />
               <Image style={{ ...globalStyles.positionAbsolute, left: '27%', top: '30%' }} source={require('../../../assets/nav6.png')} />
             </TouchableOpacity>

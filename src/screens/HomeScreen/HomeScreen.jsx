@@ -10,6 +10,8 @@ import {
     Modal
 } from 'react-native'
 import Card from './Card'
+import NavBar from '../../components/navbar'
+
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
 
@@ -82,7 +84,7 @@ function HomeScreen({ navigation }) {
                                 <Text style={styles.funtionText}>Nhận</Text>
                             </TouchableOpacity>
                             <ReceiveModal />
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={() => { navigation.navigate('history') }}>
                                 <View style={styles.functionIcon}>
                                     <Image source={require('../../../assets/buy.png')} />
                                 </View>
@@ -107,6 +109,9 @@ function HomeScreen({ navigation }) {
                             </FlatList>
                         </View>
                     </View>
+                </View>
+                <View style={styles.navbar}>
+                    <NavBar navigation={navigation} />
                 </View>
             </View>
         </View>
@@ -238,6 +243,10 @@ const styles = StyleSheet.create({
     cardView: {
         flex: 5,
     },
+
+    navbar: {
+        backgroundColor: '#221F3A'
+    }
 
 })
 
