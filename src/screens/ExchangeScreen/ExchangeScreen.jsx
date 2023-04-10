@@ -3,14 +3,10 @@ import {
     View,
     Text,
     StyleSheet,
-    FlatList,
     Dimensions,
     Image,
-    TouchableOpacity,
-    Modal
 } from 'react-native'
 import NavBar from '../../components/navbar'
-import { Colors } from 'react-native/Libraries/NewAppScreen'
 import ExchangeCard from './ExchangeCard'
 
 const windowWidth = Dimensions.get('window').width

@@ -4,54 +4,48 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    Image,
-    Modal
+    FlatList,
+    ScrollView,
 } from 'react-native'
 
 
-const DropDownList = ({ data, value, show, onSelect = () => { } }) => {
-    return (
-        <View style={styles.container}>
-            <View>
-                <TouchableOpacity
-                    style={{ flexDirection: 'row' }}
-                    onPress={onSelect}>
-                    <Text style={{ color: '#fff', marginRight: 4 }}>{value}</Text>
-                    <Image
-                        source={require('../../../assets/expand-arrow.png')}
-                        style={{
-                            alignSelf: 'center',
-                            resizeMode: 'contain',
-                            width: 9,
-                            transform: [{ rotate: show ? '0deg' : '180deg' }]
-                        }} />
-                </TouchableOpacity>
+const DropDownList = ({ data = [], show, setShow, setSelected, style }) => {
 
-            </View>
-            {show && (<View>
+    return (
+        <View style={[styles.container, style]}>
+            <ScrollView style={{ elevation: 5 }}>
                 {data.map((val) => {
                     return (
                         <TouchableOpacity
                             key={val}
-                            onPress={onSelect}>
-                            <Text>{val}</Text>
+                            onPress={() => {
+                                setSelected(val)
+                                setShow(!show)
+                            }}>
+                            <Text style={{
+                                color: '#FFFFFF'
+                            }}>
+                                {val}
+                            </Text>
                         </TouchableOpacity>
                     )
                 })}
-            </View>)}
+            </ScrollView>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        marginLeft: 5,
-        height: 27,
-        width: 70,
         backgroundColor: '#282654',
-        borderRadius: 25,
+        position: 'absolute',
+        top: 36,
+        margin: 5,
+        width: 70,
         justifyContent: 'center',
         alignItems: 'center',
+        borderRadius: 5,
+        zIndex: 10,
     },
     selection: {
         backgroundColor: '#282654',

@@ -6,15 +6,12 @@ import globalStyles from '../../../style.global';
 import { newWallet, unlockWallet } from '../../main/wallet';
 
 function NewWallet({ navigation }) {
-  const createWallet = async () => {
+  const createWallet = () => {
     try {
       navigation.navigate('HomeScreen');
     } catch (error) {
       console.log(error);
     }
-    // logic login form
-    // .....
-    // login success
   };
   return (
     <View style={{ ...globalStyles.container, ...globalStyles.positionRelative }}>

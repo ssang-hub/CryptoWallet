@@ -14,7 +14,8 @@ import {
 import { LinearGradient } from "expo-linear-gradient"
 import DropDownPicker from 'react-native-dropdown-picker';
 import DropDownList from "./DropDownList";
-import { enableFreeze } from "react-native-screens";
+import ExchangeTextFeild from "./ExchangeTextFeild";
+import Switch from "./Switch";
 
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
@@ -23,13 +24,9 @@ const windowHeight = Dimensions.get('window').height
 
 const ExchangeCard = () => {
 
-    const coinList = ['BTC', 'ETH']
+    const coinList = ['BTC', 'ETH', 'ABC']
     const [coinSelected, setCoinSelected] = useState(coinList[0])
     const [coinListOpen, setCoinListOpen] = useState(false)
-    const onSelecCoin = (val) => {
-        setCoinSelected(val)
-        setCoinListOpen(!coinListOpen)
-    }
 
     const currencyList = ['USD', 'EUR', 'VND']
     const [currencySelected, setCurrencySelected] = useState(currencyList[0])
@@ -39,28 +36,12 @@ const ExchangeCard = () => {
 
     const [isBuy, setBuy] = useState(true)
 
-    const Switch = () => {
-        return (
-            <View style={styles.switch}>
-                <TouchableOpacity style={[styles.switchOut, isBuy ? { alignItems: 'flex-start' } : { alignItems: 'flex-end' }]}
-                    onPress={() => { setBuy(!isBuy) }}>
-                    <LinearGradient
-                        colors={['#FF2CDF', '#8020EF', '#0014FF']}
-                        start={{ x: 0, y: 1 }} end={{ x: 1, y: 1 }}
-                        style={styles.switchIn}>
-                    </LinearGradient>
-                    <View style={styles.contentSwitch}>
-                        <Text style={[styles.textSwitch, isBuy ? { fontWeight: 600 } : { fontWeight: 400 }]}>Mua</Text>
-                        <Text style={[styles.textSwitch, isBuy ? { fontWeight: 400 } : { fontWeight: 600 }]}>Bán</Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
-        )
-    }
 
     return (
         <View style={styles.container}>
-            <Switch />
+            <Switch
+                isLeft={isBuy}
+                setLeft={setBuy} />
             <View style={styles.body}>
                 <View style={styles.conversionRate}>
                     <Text style={{ color: '#CACACA', fontSize: 16, marginRight: 10 }}>1 ETH = 2323442 EUR</Text>
@@ -69,17 +50,55 @@ const ExchangeCard = () => {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.input}>
-                    <View style={styles.textField}>
-                        <DropDownList
-                            data={coinList}
-                            value={coinSelected}
-                            show={coinListOpen}
-                            onSelect={onSelecCoin}
-                        />
-                        <TextInput >
-                        </TextInput>
-                    </View>
 
+                    <ExchangeTextFeild
+                        style={{ marginTop: 30 }}
+                        value={coinSelected}
+                        showList={coinListOpen}
+                        setShowList={setCoinListOpen}
+                        placeholder={'15.00-5000.00'}
+                        editable={true} />
+
+                    <ExchangeTextFeild
+                        style={{ marginTop: 30 }}
+                        value={currencySelected}
+                        showList={currencyListOpen}
+                        setShowList={setCurrencyListOpen}
+                        placeholder={'0.00'}
+                        editable={false} />
+
+                    {coinListOpen && (<DropDownList
+                        style={{ marginTop: 36 }}
+                        data={coinList}
+                        show={coinListOpen}
+                        setShow={setCoinListOpen}
+                        setSelected={setCoinSelected} />)}
+
+                    {currencyListOpen && (<DropDownList
+                        style={{ marginTop: 44 + 30 + 30 }}
+                        data={currencyList}
+                        show={currencyListOpen}
+                        setShow={setCurrencyListOpen}
+                        setSelected={setCurrencySelected} />)}
+
+                </View>
+                <View style={styles.containerButton}>
+                    <TouchableOpacity
+                        style={{ flex: 1 }}
+                        onPress={() => {
+
+                        }}>
+                        <LinearGradient
+                            colors={['#FF2CDF', '#8020EF', '#0014FF']}
+                            start={{ x: 0, y: 1 }}
+                            end={{ x: 1, y: 1 }}
+                            style={styles.exchangeButton}>
+                            <Text style={styles.exchangeText}>
+                                Chuyển đổi
+                            </Text>
+
+                        </LinearGradient>
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>
@@ -88,55 +107,16 @@ const ExchangeCard = () => {
 
 const styles = StyleSheet.create({
     container: {
-        zIndex: 2,
         marginTop: 80,
         margin: 28,
         alignItems: 'center',
         backgroundColor: '#1c1933',
-        height: windowHeight / 3,
+        height: windowHeight / 2.5,
         width: windowWidth - 28 * 2,
         borderRadius: 25,
     },
-    switch: {
-        margin: 10,
-        height: 40,
-        width: 174,
-        borderRadius: 25,
-        borderColor: '#0014FF',
-        borderWidth: 1,
-    },
-
-    switchOut: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'flex-end',
-    },
-
-    switchIn: {
-        height: 40,
-        width: 90,
-        borderRadius: 25,
-        backgroundColor: '#0014FF',
-    },
-
-    contentSwitch: {
-        flex: 1,
-        height: 40,
-        width: 170,
-        position: 'absolute',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-    },
-
-    textSwitch: {
-        color: '#FFFFFF',
-        fontSize: 17,
-        textAlign: 'center',
-    },
 
     input: {
-        zIndex: 2,
         justifyContent: 'space-between',
     },
 
@@ -147,7 +127,6 @@ const styles = StyleSheet.create({
     },
 
     textField: {
-        zIndex: 2,
         marginTop: 20,
         flexDirection: 'row',
         justifyContent: 'flex-start',
@@ -158,6 +137,27 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 30,
     },
+
+    containerButton: {
+        marginTop: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    exchangeButton: {
+        height: 40,
+        width: 120,
+        borderRadius: 100,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 100,
+    },
+
+    exchangeText: {
+        fontSize: 18,
+        fontWeight: 600,
+        color: '#FFFFFF',
+    }
 
 })
 
