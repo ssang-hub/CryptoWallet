@@ -5,14 +5,9 @@ import {
     StyleSheet,
     Dimensions,
     TouchableOpacity,
-    TextInput,
-    FlatList,
     Image,
-    Button,
-    Modal
 } from 'react-native'
 import { LinearGradient } from "expo-linear-gradient"
-import DropDownPicker from 'react-native-dropdown-picker';
 import DropDownList from "./DropDownList";
 import ExchangeTextFeild from "./ExchangeTextFeild";
 import Switch from "./Switch";
@@ -52,7 +47,7 @@ const ExchangeCard = () => {
                 <View style={styles.input}>
 
                     <ExchangeTextFeild
-                        style={{ marginTop: 30 }}
+                        style={{ marginTop: 15 }}
                         value={coinSelected}
                         showList={coinListOpen}
                         setShowList={setCoinListOpen}

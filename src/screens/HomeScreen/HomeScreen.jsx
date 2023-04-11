@@ -203,6 +203,19 @@ const styles = StyleSheet.create({
   cardView: {
     flex: 5,
   },
+  tokensText: {
+    fontWeight: 600,
+    fontSize: 24,
+    color: '#FFFFFF',
+  },
+
+  cardView: {
+    flex: 5,
+  },
+
+  navbar: {
+    backgroundColor: '#221F3A',
+  },
 });
 
 export default HomeScreen;
