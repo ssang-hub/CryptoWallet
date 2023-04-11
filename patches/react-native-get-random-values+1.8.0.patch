@@ -1,0 +1,18 @@
+diff --git a/node_modules/react-native-get-random-values/index.js b/node_modules/react-native-get-random-values/index.js
+index 7b5e313..16e90d8 100644
+--- a/node_modules/react-native-get-random-values/index.js
++++ b/node_modules/react-native-get-random-values/index.js
+@@ -1,5 +1,6 @@
+ const base64Decode = require('fast-base64-decode')
+ const { NativeModules } = require('react-native')
++const crypto = require('expo-crypto')
+ 
+ class TypeMismatchError extends Error {}
+ class QuotaExceededError extends Error {}
+@@ -68,5 +69,5 @@ if (typeof global.crypto !== 'object') {
+ }
+ 
+ if (typeof global.crypto.getRandomValues !== 'function') {
+-  global.crypto.getRandomValues = getRandomValues
++  global.crypto.getRandomValues = crypto.getRandomValues
+ }
