@@ -9,7 +9,7 @@ function WellCome({ navigation }) {
     const check = async () => {
       try {
         const check = await checkIfExistingWallet();
-        // check && navigation.navigate('login');
+        check && navigation.navigate('login');
       } catch (error) {
         console.log(error);
       }

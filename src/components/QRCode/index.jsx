@@ -9,6 +9,9 @@ const windowWidth = Dimensions.get('window').width;
 const QRCodeContainer = ({ modalVisible, setModalVisible }) => {
   const [addressWallet, setAddressWallet] = useState('12345678');
   const [copyAddress, setCopyAddress] = useState(false);
+  const handleCopyAddress = () => {
+    setCopyAddress(true);
+  };
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -32,7 +35,7 @@ const QRCodeContainer = ({ modalVisible, setModalVisible }) => {
               </View>
               <View style={styles.textInput}>
                 <TextInput style={{ color: 'white' }} disableFullscreenUI value={addressWallet} />
-                <TouchableOpacity disabled={copyAddress} onPress={() => setCopyAddress(true)} style={styles.btnCopy}>
+                <TouchableOpacity disabled={copyAddress} onPress={() => handleCopyAddress()} style={styles.btnCopy}>
                   {copyAddress ? <Icon name="check" size={18} style={{ color: 'green' }} /> : <IconCopy name="copy-outline" size={18} style={{ color: 'white' }} />}
                 </TouchableOpacity>
               </View>
