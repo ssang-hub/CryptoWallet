@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, Dimensions, Image, TouchableOpacity, 
 import Card from './Card';
 import NavBar from '../../components/navbar';
 import QRCodeReceiver from '../../components/QRCode';
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -11,51 +12,6 @@ const listButton = ['30m', '1h', '1d'];
 
 function HomeScreen({ navigation }) {
   const [visibleReceive, setVisibleReceive] = useState(false);
-
-  //   const ReceiveModal = () => {
-  //     return (
-  //       <Modal
-  //         transparent={true}
-  //         visible={visibleReceive}
-  //         animationType="slide"
-  //         onRequestClose={() => {
-  //           setVisibleReceive(false);
-  //         }}
-  //       >
-  //         <View style={{ justifyContent: 'flex-end', flex: 1 }}>
-  //           <View style={styles.receiveModal}>
-  //             <View style={styles.closeModal}>
-  //               <TouchableOpacity
-  //                 onPress={() => {
-  //                   setVisibleReceive(false);
-  //                 }}
-  //               >
-  //                 <Text>close</Text>
-  //               </TouchableOpacity>
-  //             </View>
-  //             <View style={styles.QRCode}>
-  //               <Text>QR code</Text>
-  //             </View>
-  //             <View style={styles.url}>
-  //               <Text>URL https:ashfkhfdhasfk</Text>
-  //               <TouchableOpacity onPress={() => {}} style={styles.copyButton}>
-  //                 <Text
-  //                   style={{
-  //                     backgroundColor: '#fbf9f9ff',
-  //                     flex: 1,
-  //                     fontSize: 20,
-  //                     color: '#FFFFFF',
-  //                   }}
-  //                 >
-  //                   Copy
-  //                 </Text>
-  //               </TouchableOpacity>
-  //             </View>
-  //           </View>
-  //         </View>
-  //       </Modal>
-  //     );
-  //   };
 
   return (
     <View style={visibleReceive ? { flex: 1, opacity: 0.7 } : { flex: 1 }}>
@@ -231,8 +187,18 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
 
+  tokensText: {
+    fontWeight: 600,
+    fontSize: 24,
+    color: '#FFFFFF',
+  },
+
   cardView: {
     flex: 5,
+  },
+
+  navbar: {
+    backgroundColor: '#221F3A',
   },
 });
 

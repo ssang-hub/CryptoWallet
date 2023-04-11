@@ -7,7 +7,7 @@ const windowWidth = Dimensions.get('window').width;
 const NavBar = ({ navigation }) => {
   return (
     <View>
-      <View style={{ ...globalStyles.positionRelative }}>
+      <View style={{}}>
         <Image style={{ width: windowWidth }} source={require('../../../assets/Rectangle.png')}></Image>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', ...globalStyles.positionAbsolute, bottom: 5, width: '100%' }}>
           <View style={{ flexDirection: 'row' }}>
@@ -19,12 +19,20 @@ const NavBar = ({ navigation }) => {
             >
               <Image style={styles.navItem} source={require('../../../assets/nav1.png')} />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('ExchangeScreen');
+              }}
+            >
               <Image style={styles.navItem} source={require('../../../assets/nav2.png')} />
             </TouchableOpacity>
           </View>
           <View style={{ ...globalStyles.positionAbsolute, left: '45%', bottom: '70%' }}>
-            <TouchableOpacity onPress={() => navigation.navigate('home')}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('HomeScreen');
+              }}
+            >
               <Image source={require('../../../assets/nav5.png')} />
               <Image style={{ ...globalStyles.positionAbsolute, left: '27%', top: '30%' }} source={require('../../../assets/nav6.png')} />
             </TouchableOpacity>

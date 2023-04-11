@@ -10,7 +10,7 @@ function Login({ navigation }) {
   const loginFunction = async () => {
     setLoading(true);
     const loginResult = await unlockWallet(password);
-    loginResult === 'success' ? navigation.navigate('home') : console.log('sai mat khau');
+    loginResult === 'success' ? navigation.navigate('HomeScreen') : console.log('sai mat khau');
     setLoading(false);
   };
   // useEffect(() => {
