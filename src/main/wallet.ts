@@ -1,8 +1,8 @@
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ethers } from 'ethers';
-import { CURRENT_WALLET } from '../constants/storage';
+import { Wallet, ethers } from 'ethers';
+import { ACCOUNT_COUNTER, CURRENT_WALLET } from '../constants/storage';
 
 const newWallet = async (password: string) => {
   const wallet = ethers.Wallet.createRandom();
@@ -11,7 +11,8 @@ const newWallet = async (password: string) => {
       N: 64,
     },
   });
-  AsyncStorage.setItem(CURRENT_WALLET, walletJson);
+  await AsyncStorage.setItem(ACCOUNT_COUNTER, '1');
+  await AsyncStorage.setItem(CURRENT_WALLET, walletJson);
 };
 
 const checkIfExistingWallet = async () => {
@@ -20,15 +21,29 @@ const checkIfExistingWallet = async () => {
 };
 
 // For login feature
-const unlockWallet = async (password: string): Promise<'success' | 'fail'> => {
+const unlockWallet = async (
+  password: string,
+): Promise<
+  | {
+      status: 'success';
+      wallet: Wallet;
+    }
+  | {
+      status: 'fail';
+    }
+> => {
   try {
     const walletJson = await AsyncStorage.getItem(CURRENT_WALLET);
-
-    await ethers.Wallet.fromEncryptedJson(walletJson, password);
-    return 'success';
+    const wallet = await ethers.Wallet.fromEncryptedJson(walletJson, password);
+    return {
+      status: 'success',
+      wallet,
+    };
   } catch (e) {
-    // console.error(e);
-    return 'fail';
+    console.error(e);
+    return {
+      status: 'fail',
+    };
   }
 };
 
