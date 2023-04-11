@@ -7,19 +7,25 @@ import { unlockWallet } from '../../main/wallet';
 function Login({ navigation }) {
   const [password, setPassword] = useState('');
   const [isLoading, setLoading] = useState(false);
-  useEffect(() => {
-    if (isLoading) {
-      const handleLogin = async () => {
-        try {
-          const loginResult = await unlockWallet(password);
-          loginResult === 'success' ? navigation.navigate('home') : console.log('sai mat khau');
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      handleLogin();
-    }
-  }, [isLoading]);
+  const loginFunction = async () => {
+    setLoading(true);
+    const loginResult = await unlockWallet(password);
+    loginResult === 'success' ? navigation.navigate('home') : console.log('sai mat khau');
+    setLoading(false);
+  };
+  // useEffect(() => {
+  //   if (isLoading) {
+  //     const handleLogin = async () => {
+  //       try {
+  //         const loginResult = await unlockWallet(password);
+  //         loginResult === 'success' ? navigation.navigate('home') : console.log('sai mat khau');
+  //       } catch (error) {
+  //         console.log(error);
+  //       }
+  //     };
+  //     handleLogin();
+  //   }
+  // }, [isLoading]);
 
   return (
     <View style={{ ...globalStyles.container, ...globalStyles.justifyContentSpaceAround, ...globalStyles.positionRelative }}>
@@ -44,7 +50,7 @@ function Login({ navigation }) {
       </View>
       <View>
         <LinearGradient colors={['#0014FF', '#8020EF', '#FF2CDF']} start={{ x: 0, y: 1 }} end={{ x: 1, y: 1 }} style={globalStyles.buttonLinear}>
-          <TouchableOpacity onPress={() => setLoading(true)}>
+          <TouchableOpacity disabled={isLoading} onPress={() => loginFunction()}>
             {isLoading ? (
               <View>
                 <ActivityIndicator size="small" />

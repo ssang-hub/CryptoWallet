@@ -11,11 +11,6 @@ function Wallets({ navigation }) {
   ]);
   return (
     <View style={{ ...globalStyles.container, ...globalStyles.positionRelative }}>
-      <LinearGradient style={styles.sidebarButton} colors={['#0014FF', '#8020EF', '#FF2CDF']} start={{ x: 0, y: 1 }} end={{ x: 1, y: 1 }}>
-        <View>
-          <Image source={require('../../../assets/sidebar.png')} />
-        </View>
-      </LinearGradient>
       <View style={styles.walletsContainer}>
         <Text style={{ color: 'white', marginVertical: 50 }}>Chọn loại ví muốn kiểm tra số dư tài khoản</Text>
         <View>

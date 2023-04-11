@@ -5,8 +5,6 @@ import QRCodeContainer from '../QRCode';
 const windowWidth = Dimensions.get('window').width;
 
 const NavBar = ({ navigation }) => {
-  const [modalVisible, setModalVisible] = useState(false);
-
   return (
     <View>
       <View style={{ ...globalStyles.positionRelative }}>
@@ -26,7 +24,7 @@ const NavBar = ({ navigation }) => {
             </TouchableOpacity>
           </View>
           <View style={{ ...globalStyles.positionAbsolute, left: '45%', bottom: '70%' }}>
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
+            <TouchableOpacity onPress={() => navigation.navigate('home')}>
               <Image source={require('../../../assets/nav5.png')} />
               <Image style={{ ...globalStyles.positionAbsolute, left: '27%', top: '30%' }} source={require('../../../assets/nav6.png')} />
             </TouchableOpacity>
@@ -61,9 +59,6 @@ const NavBar = ({ navigation }) => {
           <Icon.Button name="person" size={25} color={'#FF2CDF'} backgroundColor={'#221F3A'}></Icon.Button>
         </TouchableOpacity>
       </View> */}
-      <View style={{ position: 'absolute' }}>
-        <QRCodeContainer modalVisible={modalVisible} setModalVisible={setModalVisible} />
-      </View>
     </View>
   );
 };

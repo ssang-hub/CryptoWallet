@@ -12,8 +12,11 @@ function NewWallet({ navigation }) {
 
   const createWallet = async () => {
     try {
-      await newWallet(password);
-      navigation.navigate('login');
+      setIsLoading(true);
+      setTimeout(async () => {
+        await newWallet(password);
+        navigation.navigate('login');
+      }, 0.1);
     } catch (error) {
       console.log(error);
     }
@@ -51,7 +54,7 @@ function NewWallet({ navigation }) {
             />
           </View>
           <LinearGradient colors={['#FF2CDF', '#8020EF', '#0014FF']} start={{ x: 0, y: 1 }} end={{ x: 1, y: 1 }} style={styles.button}>
-            <TouchableOpacity disabled={isLoading || password !== passwordConfirm} onPress={() => createWallet()}>
+            <TouchableOpacity disabled={isLoading || password !== passwordConfirm} onPress={createWallet}>
               {isLoading ? (
                 <View>
                   <ActivityIndicator size="small" />

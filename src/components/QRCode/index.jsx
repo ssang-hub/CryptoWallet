@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { Alert, Modal, StyleSheet, Text, Pressable, View, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import { Alert, Modal, StyleSheet, Text, Pressable, View, Dimensions, TextInput, TouchableOpacity } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import Icon from 'react-native-vector-icons/Entypo';
+import IconCopy from 'react-native-vector-icons/Ionicons';
 
 const windowWidth = Dimensions.get('window').width;
 
 const QRCodeContainer = ({ modalVisible, setModalVisible }) => {
+  const [addressWallet, setAddressWallet] = useState('12345678');
+  const [copyAddress, setCopyAddress] = useState(false);
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -26,6 +29,12 @@ const QRCodeContainer = ({ modalVisible, setModalVisible }) => {
               </Pressable>
               <View style={{ paddingVertical: 30 }}>
                 <QRCode size={150} value="https://google.com" backgroundColor="#8020EF" color="white" />
+              </View>
+              <View style={styles.textInput}>
+                <TextInput style={{ color: 'white' }} disableFullscreenUI value={addressWallet} />
+                <TouchableOpacity disabled={copyAddress} onPress={() => setCopyAddress(true)} style={styles.btnCopy}>
+                  {copyAddress ? <Icon name="check" size={18} style={{ color: 'green' }} /> : <IconCopy name="copy-outline" size={18} style={{ color: 'white' }} />}
+                </TouchableOpacity>
               </View>
               <View style={{ paddingBottom: 20 }}>
                 <Pressable style={[styles.button, styles.buttonPayment]}>
@@ -54,6 +63,8 @@ const styles = StyleSheet.create({
     // padding: 35,
     width: windowWidth,
     paddingHorizontal: 35,
+    // height: 300,
+
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -63,7 +74,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    top: '100%',
+    top: '70%',
     // left: '0%',
   },
   button: {
@@ -92,6 +103,19 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
+  },
+  textInput: {
+    borderColor: 'white',
+    borderWidth: 1,
+    paddingVertical: 5,
+    paddingHorizontal: 20,
+    marginBottom: 5,
+    borderRadius: 20,
+    flexDirection: 'row',
+  },
+  btnCopy: {
+    padding: 10,
+    marginLeft: 30,
   },
 });
 
