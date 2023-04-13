@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const accountSlice = createSlice({
-  name: 'accounts',
+const AccountTargetSlice = createSlice({
+  name: 'accountTarget',
   initialState: {
     acc: {},
   },
@@ -11,5 +11,5 @@ const accountSlice = createSlice({
     },
   },
 });
-export const { setTarget } = accountSlice.actions;
-export default accountSlice.reducer;
+export const { setTarget } = AccountTargetSlice.actions;
+export default AccountTargetSlice.reducer;

@@ -23,15 +23,18 @@ const NavBar = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('ExchangeScreen')
-              }}>
+                navigation.navigate('ExchangeScreen');
+              }}
+            >
               <Image style={styles.navItem} source={require('../../../assets/nav2.png')} />
             </TouchableOpacity>
           </View>
           <View style={{ ...globalStyles.positionAbsolute, left: '45%', bottom: '70%' }}>
-            <TouchableOpacity onPress={() => {
-              navigation.navigate('home')
-            }}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('home');
+              }}
+            >
               <Image source={require('../../../assets/nav5.png')} />
               <Image style={{ ...globalStyles.positionAbsolute, left: '27%', top: '30%' }} source={require('../../../assets/nav6.png')} />
             </TouchableOpacity>
@@ -39,7 +42,9 @@ const NavBar = ({ navigation }) => {
           <View style={{ flexDirection: 'row', marginRight: 10 }}>
             <TouchableOpacity
               style={{ marginHorizontal: 12 }}
-
+              onPress={() => {
+                navigation.navigate('statistic');
+              }}
             >
               <Image style={styles.navItem} source={require('../../../assets/nav3.png')} />
             </TouchableOpacity>
