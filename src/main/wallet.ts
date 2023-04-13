@@ -25,12 +25,12 @@ const unlockWallet = async (
   password: string,
 ): Promise<
   | {
-    status: 'success';
-    wallet: Wallet;
-  }
+      status: 'success';
+      wallet: Wallet;
+    }
   | {
-    status: 'fail';
-  }
+      status: 'fail';
+    }
 > => {
   try {
     const walletJson = await AsyncStorage.getItem(CURRENT_WALLET);
