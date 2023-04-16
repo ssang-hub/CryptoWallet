@@ -40,4 +40,14 @@ const getAccountBalance = async (address: string) => {
   return balanceInEth;
 };
 
-export { getAccountList, createAccount, getAccountBalance };
+const getAllAccounts = async (wallet: Wallet) => {
+  const accountList = await getAccountList(wallet);
+  const accounts = [];
+  for (let account of accountList) {
+    const accBalance = await getAccountBalance(account.address);
+    accounts.push({ ...account, balance: accBalance });
+  }
+  return accounts;
+};
+
+export { getAccountList, createAccount, getAccountBalance, getAllAccounts };

@@ -1,26 +1,52 @@
-import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, FlatList } from 'react-native';
 import globalStyles from '../../../style.global';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { accountSelector, walletSelector } from '../../store/selector';
+import { setTarget } from '../../store/reducers/accountTarget.slice';
+import { addAccount } from '../../store/reducers/account.slice';
+import { createAccount } from '../../main/account';
 
 function Wallets({ navigation }) {
-  const [wallets, SetWallets] = useState([
-    { id: 1, name: 'metamask', accBal: 3000 },
-    { id: 2, name: 'automicwallet', accBal: 5120 },
-    { id: 3, name: 'mycelium', accBal: 4000 },
-  ]);
+  const wallet = useSelector(walletSelector);
+
+  const myaccounts = useSelector(accountSelector);
+  const dispatch = useDispatch();
+  const changeTarget = (wallet) => {
+    dispatch(setTarget(wallet));
+    navigation.navigate('home');
+  };
+
+  const createNewAccount = async () => {
+    try {
+      // parse wallet string to wallet object
+      const walletJSON = await JSON.parse(wallet);
+      console.log(walletJSON.mnemonic);
+      const accountCreate = await createAccount(walletJSON);
+      dispatch(addAccount(accountCreate));
+      navigation.navigate('home');
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <View style={{ ...globalStyles.container, ...globalStyles.positionRelative }}>
       <View style={styles.walletsContainer}>
         <Text style={{ color: 'white', marginVertical: 50 }}>Chọn loại ví muốn kiểm tra số dư tài khoản</Text>
-        <View>
-          {wallets.map((wallet) => (
-            <TouchableOpacity style={styles.walletStyle} key={wallet.id}>
-              <Text style={styles.walletName}>{wallet.name}</Text>
-              <Text style={styles.walletAccBal}>${wallet.accBal}</Text>
-            </TouchableOpacity>
-          ))}
+        <View style={{ height: '70%' }}>
+          <FlatList
+            data={myaccounts}
+            renderItem={({ item }) => (
+              <TouchableOpacity style={styles.walletStyle} key={item.address} onPress={() => changeTarget(item)}>
+                <Text style={styles.walletName}>{item.name}</Text>
+                <Text style={styles.walletAccBal}>${item.balance}</Text>
+              </TouchableOpacity>
+            )}
+            keyExtractor={(item) => item.address}
+          />
         </View>
+        <Text style={styles.textButton} onPress={() => createNewAccount()}>
+          Thêm tài khoản
+        </Text>
       </View>
     </View>
   );
@@ -59,6 +85,11 @@ const styles = StyleSheet.create({
   walletAccBal: {
     color: 'white',
     fontSize: 23,
+  },
+  textButton: {
+    color: 'white',
+    textDecorationLine: 'underline',
+    fontSize: 16,
   },
 });
 export default Wallets;

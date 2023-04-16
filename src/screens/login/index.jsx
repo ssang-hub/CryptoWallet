@@ -4,14 +4,43 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import globalStyles from '../../../style.global';
 import { unlockWallet } from '../../main/wallet';
+import { useDispatch } from 'react-redux';
+
+import { getAllAccounts } from '../../main/account';
+
+// redux slice
+import { setWallet } from '../../store/reducers/Wallet.slice';
+import { setAccounts } from '../../store/reducers/account.slice';
+import { setTarget } from '../../store/reducers/accountTarget.slice';
+
 function Login({ navigation }) {
+  const dispatch = useDispatch();
+
   const [password, setPassword] = useState('');
   const [isLoading, setLoading] = useState(false);
+  const [wrongPassword, setWrongPassword] = useState(false);
+
+  const loginSuccess = async (wallet) => {
+    try {
+      dispatch(setWallet(JSON.stringify(wallet)));
+      const accounts = await getAllAccounts(wallet);
+      dispatch(setAccounts(accounts));
+      dispatch(setTarget(accounts[0]));
+
+      navigation.navigate('home');
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const loginFailure = () => {
+    setWrongPassword(true);
+    setLoading(false);
+  };
   const loginFunction = async () => {
     setLoading(true);
     const loginResult = await unlockWallet(password);
-    loginResult.status === 'success' ? navigation.navigate('home') : console.log('sai mat khau');
-    setLoading(false);
+    loginResult.status === 'success' ? loginSuccess(loginResult.wallet) : loginFailure();
   };
   // useEffect(() => {
   //   if (isLoading) {
@@ -44,6 +73,11 @@ function Login({ navigation }) {
             setPassword(password);
           }}
         />
+        {wrongPassword && (
+          <View style={styles.wrongPassword}>
+            <Text style={{ color: 'red' }}>Mật khẩu không chính xác</Text>
+          </View>
+        )}
       </View>
       <View>
         <Image source={require('../../../assets/bubble.png')} />
@@ -74,6 +108,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'gray',
     marginTop: 30,
+    position: 'relative',
   },
   TextInput: {
     height: 50,
@@ -84,6 +119,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignItems: 'center',
   },
+  wrongPassword: { position: 'absolute', bottom: -30, right: 0 },
 });
 
 export default Login;
