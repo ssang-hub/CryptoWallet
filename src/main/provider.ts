@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
 
-const goerliProvider = ethers.providers.getDefaultProvider('goerli');
+const sepoliaProvider = ethers.providers.getDefaultProvider('sepolia');
 
-export { goerliProvider };
+export { sepoliaProvider };

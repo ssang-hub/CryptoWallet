@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Wallet, ethers } from 'ethers';
 import { ACCOUNT_COUNTER } from '../constants/storage';
-import { goerliProvider } from './provider';
+import { sepoliaProvider } from './provider';
 
 const getAccountCounter = async () => {
   const accountCounter = await AsyncStorage.getItem(ACCOUNT_COUNTER);
@@ -31,11 +31,11 @@ const createAccount = async (wallet: Wallet) => {
   const node = ethers.utils.HDNode.fromMnemonic(wallet.mnemonic.phrase);
   const accountPath = ethers.utils.getAccountPath(nextCounter);
   const newAccount = node.derivePath(accountPath);
-  return newAccount;
+  return { ...newAccount, name: `Account ${nextCounter}` };
 };
 
 const getAccountBalance = async (address: string) => {
-  const balance = await goerliProvider.getBalance(address);
+  const balance = await sepoliaProvider.getBalance(address);
   const balanceInEth = ethers.utils.formatEther(balance);
   return balanceInEth;
 };

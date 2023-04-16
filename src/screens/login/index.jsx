@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -8,8 +8,10 @@ import { useDispatch } from 'react-redux';
 
 import { getAllAccounts } from '../../main/account';
 
+import walletContext from '../../context/walletContext';
+
 // redux slice
-import { setWallet } from '../../store/reducers/Wallet.slice';
+// import { setWallet } from '../../store/reducers/Wallet.slice';
 import { setAccounts } from '../../store/reducers/account.slice';
 import { setTarget } from '../../store/reducers/accountTarget.slice';
 
@@ -19,10 +21,13 @@ function Login({ navigation }) {
   const [password, setPassword] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [wrongPassword, setWrongPassword] = useState(false);
-
+  const [, setMyWallet] = useContext(walletContext);
   const loginSuccess = async (wallet) => {
     try {
-      dispatch(setWallet(JSON.stringify(wallet)));
+      // console.log('mywallet', JSON.stringify(wallet));
+      setMyWallet(wallet);
+      // dispatch(setWallet(wallet));
+      console.log('mywallet2', wallet);
       const accounts = await getAllAccounts(wallet);
       dispatch(setAccounts(accounts));
       dispatch(setTarget(accounts[0]));

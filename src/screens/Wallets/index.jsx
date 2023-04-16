@@ -1,13 +1,15 @@
-import { View, StyleSheet, Text, TouchableOpacity, FlatList } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import globalStyles from '../../../style.global';
 import { useDispatch, useSelector } from 'react-redux';
-import { accountSelector, walletSelector } from '../../store/selector';
+import { accountSelector } from '../../store/selector';
 import { setTarget } from '../../store/reducers/accountTarget.slice';
-import { addAccount } from '../../store/reducers/account.slice';
+import { setAccounts } from '../../store/reducers/account.slice';
 import { createAccount } from '../../main/account';
-
+import { useContext, useState } from 'react';
+import walletContext from '../../context/walletContext';
 function Wallets({ navigation }) {
-  const wallet = useSelector(walletSelector);
+  const [myWallet, setMyWallet] = useContext(walletContext);
+  const [createLoading, setCreateLoading] = useState(false);
 
   const myaccounts = useSelector(accountSelector);
   const dispatch = useDispatch();
@@ -18,11 +20,12 @@ function Wallets({ navigation }) {
 
   const createNewAccount = async () => {
     try {
-      // parse wallet string to wallet object
-      const walletJSON = await JSON.parse(wallet);
-      console.log(walletJSON.mnemonic);
-      const accountCreate = await createAccount(walletJSON);
-      dispatch(addAccount(accountCreate));
+      setCreateLoading(true);
+      const accountData = await createAccount(myWallet);
+      // how to get new AccountName
+      const newAccountsArray = [...myaccounts, { address: accountData.address, balance: '0.0', name: accountData.name, privateKey: accountData.privateKey }];
+      setCreateLoading(false);
+      dispatch(setAccounts(newAccountsArray));
       navigation.navigate('home');
     } catch (error) {
       console.log(error);
@@ -44,9 +47,16 @@ function Wallets({ navigation }) {
             keyExtractor={(item) => item.address}
           />
         </View>
-        <Text style={styles.textButton} onPress={() => createNewAccount()}>
-          Thêm tài khoản
-        </Text>
+        <View style={{ flexDirection: 'row' }}>
+          {createLoading && (
+            <View>
+              <ActivityIndicator size="small" />
+            </View>
+          )}
+          <Text style={styles.textButton} disabled={createLoading} onPress={() => createNewAccount()}>
+            Thêm tài khoản
+          </Text>
+        </View>
       </View>
     </View>
   );

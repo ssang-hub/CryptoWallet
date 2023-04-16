@@ -1,15 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View, Dimensions, TextInput, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 import { useSelector } from 'react-redux';
-import { accountTargetSelector, walletSelector } from '../../store/selector';
+import { accountTargetSelector } from '../../store/selector';
 import { estimateETHTransferFee, transferETH } from '../../main/eth-transfer';
+import walletContext from '../../context/walletContext';
 
 const windowWidth = Dimensions.get('window').width;
 
 const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
   const account = useSelector(accountTargetSelector);
-  const myWallet = useSelector(walletSelector);
+  const [myWallet, setMyWallet] = useContext(walletContext);
+
   const [to, setTo] = useState();
   const [value, setValue] = useState();
   const [transferFee, setTransferFee] = useState();
@@ -27,8 +29,7 @@ const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
 
   const handlerTransfer = async () => {
     try {
-      const wallet = await JSON.parse(myWallet);
-      await transferETH({ wallet, from, to, value, gasPrice });
+      await transferETH({ wallet: myWallet, from: account.address, to, value, gasPrice });
       console.log('success transfer');
     } catch (error) {
       console.log(error);
@@ -61,13 +62,13 @@ const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
               <View style={styles.inputContainer}>
                 <Text style={styles.textWhite}>Ngừơi nhận:</Text>
                 <View style={{ ...styles.textInput }}>
-                  <TextInput style={{ color: 'white', width: '60%' }} onChange={(address) => setTo(address)} />
+                  <TextInput style={{ color: 'white', width: '60%' }} onChangeText={(address) => setTo(address)} />
                 </View>
               </View>
               <View style={styles.inputContainer}>
                 <Text style={styles.textWhite}>Số coin gửi:</Text>
                 <View style={{ ...styles.textInput }}>
-                  <TextInput style={{ color: 'white', width: '60%' }} onChange={(numberCoin) => setValue(numberCoin)} />
+                  <TextInput style={{ color: 'white', width: '60%' }} onChangeText={(numberCoin) => setValue(numberCoin)} />
                 </View>
               </View>
 

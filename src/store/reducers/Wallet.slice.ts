@@ -3,11 +3,12 @@ import { createSlice } from '@reduxjs/toolkit';
 const myWallet = createSlice({
   name: 'wallet',
   initialState: {
-    wallet: {},
+    wallet: undefined,
   },
   reducers: {
     setWallet: (state, action) => {
-      state.wallet = action.payload;
+      // state.wallet = action.payload;
+      console.log('payload', action.payload);
     },
   },
 });
