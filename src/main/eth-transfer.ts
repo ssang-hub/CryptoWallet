@@ -11,8 +11,10 @@ const estimateETHTransferFee = async (params: { from: string; to: string; value:
 };
 
 const transferETH = async ({ from, to, value, gasPrice, wallet }: { wallet: Wallet; from: string; to: string; value: string; gasPrice: string }) => {
+  const walletConnected = wallet.connect(sepoliaProvider);
+  value = ethers.utils.parseEther(value).toString();
   const txCount = await sepoliaProvider.getTransactionCount(from);
-  const txResponse = await wallet.sendTransaction({ from, to, value, nonce: txCount, gasLimit: '21000', gasPrice });
+  const txResponse = await walletConnected.sendTransaction({ from, to, value, nonce: txCount, gasLimit: '21000', gasPrice });
   await txResponse.wait(1);
 };
 

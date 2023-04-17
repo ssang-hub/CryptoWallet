@@ -15,6 +15,7 @@ import walletContext from '../../context/walletContext';
 import { setAccounts } from '../../store/reducers/account.slice';
 import { setTarget } from '../../store/reducers/accountTarget.slice';
 
+
 function Login({ navigation }) {
   const dispatch = useDispatch();
 
