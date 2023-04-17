@@ -34,6 +34,10 @@ const AccountTargetSlice = createSlice({
   },
   reducers: {
     setTarget: (state, action) => {
+      action.payload = { ...action.payload, balance: parseFloat(action.payload.balance).toFixed(5) };
+      state.acc = action.payload;
+    },
+    updateBalance: (state, action) => {
       state.acc = action.payload;
     },
     setHistory: (state, action) => {
