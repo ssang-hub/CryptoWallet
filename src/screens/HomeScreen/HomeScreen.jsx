@@ -1,16 +1,11 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  Dimensions,
-  Image,
-  TouchableOpacity
-} from 'react-native';
+import { View, Text, StyleSheet, FlatList, Dimensions, Image, TouchableOpacity } from 'react-native';
+import { useSelector } from 'react-redux';
 import Card from './Card';
 import NavBar from '../../components/navbar';
 import QRCodeReceiver from '../../components/QRCode';
+import SendCoin from '../../components/sendCoin';
+import { accountTargetSelector } from '../../store/selector';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -19,19 +14,21 @@ const listButton = ['30m', '1h', '1d'];
 
 function HomeScreen({ navigation }) {
   const [visibleReceive, setVisibleReceive] = useState(false);
+  const [visibleSend, setVisibleSend] = useState(false);
 
+  const accTarget = useSelector(accountTargetSelector);
   return (
     <View style={visibleReceive ? { flex: 1, opacity: 0.7 } : { flex: 1 }}>
       <Image source={require('../../../assets/bgImg.png')} style={styles.imageBG} />
       <View style={styles.container}>
         <View style={styles.body}>
           <View style={styles.infomation}>
-            <Text style={styles.nameAccount}> Account 1</Text>
-            <Text style={styles.money}> 10000 ETH</Text>
+            <Text style={styles.nameAccount}> {accTarget.name}</Text>
+            <Text style={styles.money}> {accTarget.balance} ETH</Text>
             <View style={styles.funtion}>
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate('SendCoin');
+                  setVisibleSend(true);
                 }}
               >
                 <View style={styles.functionIcon}>
@@ -50,6 +47,7 @@ function HomeScreen({ navigation }) {
                 <Text style={styles.funtionText}>Nhận</Text>
               </TouchableOpacity>
               <QRCodeReceiver modalVisible={visibleReceive} setModalVisible={setVisibleReceive} />
+              <SendCoin modalVisible={visibleSend} setModalVisible={setVisibleSend} />
               <TouchableOpacity>
                 <View style={styles.functionIcon}>
                   <Image source={require('../../../assets/send.png')} />
@@ -63,13 +61,7 @@ function HomeScreen({ navigation }) {
               <Text style={styles.tokensText}>Tokens</Text>
             </View>
             <View style={styles.cardView}>
-              <FlatList
-                data={listCoins}
-                renderItem={({ item }) => <Card setCoin={item} />}
-                horizontal pagingEnabled snapToAlignment="center"
-                style={{ flex: 1 }}>
-
-              </FlatList>
+              <FlatList data={listCoins} renderItem={({ item }) => <Card setCoin={item} />} horizontal pagingEnabled snapToAlignment="center" style={{ flex: 1 }}></FlatList>
             </View>
           </View>
         </View>

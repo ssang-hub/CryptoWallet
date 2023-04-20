@@ -11,6 +11,8 @@ const newWallet = async (password: string) => {
       N: 64,
     },
   });
+  console.log(walletJson);
+
   await AsyncStorage.setItem(ACCOUNT_COUNTER, '1');
   await AsyncStorage.setItem(CURRENT_WALLET, walletJson);
 };
@@ -40,7 +42,7 @@ const unlockWallet = async (
       wallet,
     };
   } catch (e) {
-    console.error(e);
+    // console.error(e);
     return {
       status: 'fail',
     };

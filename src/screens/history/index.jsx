@@ -6,42 +6,22 @@ import TransactionItem from '../../components/TransactionItem';
 import PrevioustBtn from '../../components/previousBtn';
 import globalStyles from '../../../style.global';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { accountTargetSelector, historySelector } from '../../store/selector';
+import { useSelector } from 'react-redux';
 
 const windowWidth = Dimensions.get('window').width;
 
 function History({ navigation }) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('apple');
-  const [data, setData] = useState([
-    {
-      id: 1,
-      name: 'Etherenum',
-      date: '',
-      price: 123,
-    },
-    {
-      id: 2,
-      name: 'BitCoin',
-      date: '',
-      price: 126,
-    },
-    {
-      id: 3,
-      name: 'Etherenum',
-      date: '',
-      price: 103,
-    },
-    {
-      id: 4,
-      name: 'BitCoin',
-      date: '',
-      price: 113,
-    },
-  ]);
   const [items, setItems] = useState([
     { label: 'Apple', value: 'apple' },
     { label: 'Banana', value: 'banana' },
   ]);
+
+  const accTarget = useSelector(accountTargetSelector);
+
+  const myhistory = useSelector(historySelector);
 
   return (
     <View style={{ ...globalStyles.container, ...globalStyles.positionRelative }}>
@@ -57,7 +37,7 @@ function History({ navigation }) {
             <View style={styles.chart}>
               <View style={{ zIndex: 2, width: '70%', flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View>
-                  <Text style={{ color: 'white', fontSize: 25 }}>$1000</Text>
+                  <Text style={{ color: 'white', fontSize: 25 }}>${accTarget.balance}</Text>
                 </View>
                 <View style={{ position: 'relative' }}>
                   <View style={{ position: 'absolute', top: '44%', left: '15%' }}>
@@ -80,7 +60,7 @@ function History({ navigation }) {
             </View>
           </View>
           <View style={{ flex: 5, height: 150 }}>
-            <FlatList data={data} renderItem={({ item }) => <TransactionItem item={item} />} keyExtractor={(item) => item.id} />
+            <FlatList data={myhistory} renderItem={({ item }) => <TransactionItem item={item} />} keyExtractor={(item) => item.id} />
           </View>
 
           <View style={{ alignItems: 'center' }}>

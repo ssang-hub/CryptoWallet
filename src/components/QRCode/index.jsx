@@ -1,17 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View, Dimensions, TextInput, TouchableOpacity } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import Icon from 'react-native-vector-icons/Entypo';
 import IconCopy from 'react-native-vector-icons/Ionicons';
+import { useSelector } from 'react-redux';
+import { addressSelector } from '../../store/selector';
+import * as Clipboard from 'expo-clipboard';
 
 const windowWidth = Dimensions.get('window').width;
 
 const QRCodeContainer = ({ modalVisible, setModalVisible }) => {
-  const [addressWallet, setAddressWallet] = useState('12345678');
+  const addressWallet = useSelector(addressSelector);
   const [copyAddress, setCopyAddress] = useState(false);
-  const handleCopyAddress = () => {
+  const handleCopyAddress = async () => {
+    await Clipboard.setStringAsync(addressWallet);
     setCopyAddress(true);
   };
+  useEffect(() => {
+    setCopyAddress(false);
+  }, [addressWallet]);
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -34,8 +41,8 @@ const QRCodeContainer = ({ modalVisible, setModalVisible }) => {
                 <QRCode size={150} value="https://google.com" backgroundColor="#8020EF" color="white" />
               </View>
               <View style={styles.textInput}>
-                <TextInput style={{ color: 'white' }} disableFullscreenUI value={addressWallet} />
-                <TouchableOpacity disabled={copyAddress} onPress={() => handleCopyAddress()} style={styles.btnCopy}>
+                <TextInput style={{ color: 'white', width: '60%' }} editable={false} value={addressWallet} />
+                <TouchableOpacity disabled={copyAddress} onPress={handleCopyAddress} style={styles.btnCopy}>
                   {copyAddress ? <Icon name="check" size={18} style={{ color: 'green' }} /> : <IconCopy name="copy-outline" size={18} style={{ color: 'white' }} />}
                 </TouchableOpacity>
               </View>
