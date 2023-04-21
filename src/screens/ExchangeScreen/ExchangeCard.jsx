@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
     View,
     Text,
@@ -11,15 +11,16 @@ import { LinearGradient } from "expo-linear-gradient"
 import DropDownList from "./DropDownList";
 import ExchangeTextFeild from "./ExchangeTextFeild";
 import Switch from "./Switch";
+import axios from 'axios'
 
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
-
+const API = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin%2Cethereum&vs_currencies=usd%2Ceur%2Cvnd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false&precision=4'
 
 
 const ExchangeCard = () => {
 
-    const coinList = ['BTC', 'ETH', 'ABC']
+    const coinList = ['BTC', 'ETH']
     const [coinSelected, setCoinSelected] = useState(coinList[0])
     const [coinListOpen, setCoinListOpen] = useState(false)
 
@@ -27,7 +28,36 @@ const ExchangeCard = () => {
     const [currencySelected, setCurrencySelected] = useState(currencyList[0])
     const [currencyListOpen, setCurrencyListOpen] = useState(false)
 
+    const [prices, setPrices] = useState(0)
+    const [priceExchange, setPriceExchange] = useState(0)
 
+    const [inputValue, setInputValue] = useState(0)
+    const [exchangeValue, setExchangeValue] = useState(0)
+
+    const DICT = { BTC: 'bitcoin', ETH: 'ethereum', USD: 'usd', EUR: 'eur', VND: 'vnd' }
+
+    async function fetchData() {
+        try {
+            const response = await axios.get(API);
+            setPrices(response.data)
+            setPriceExchange(prices[DICT[coinSelected]][DICT[currencySelected]])
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+    useEffect(() => {
+        fetchData()
+    }, [])
+
+    useEffect(() => {
+        try {
+            setPriceExchange(prices[DICT[coinSelected]][DICT[currencySelected]])
+        } catch (error) {
+            console.log(error)
+        }
+    }, [coinSelected, currencySelected])
 
     const [isBuy, setBuy] = useState(true)
 
@@ -39,7 +69,7 @@ const ExchangeCard = () => {
                 setLeft={setBuy} />
             <View style={styles.body}>
                 <View style={styles.conversionRate}>
-                    <Text style={{ color: '#CACACA', fontSize: 16, marginRight: 10 }}>1 ETH = 2323442 EUR</Text>
+                    <Text style={{ color: '#CACACA', fontSize: 16, marginRight: 10 }}>1 {coinSelected} = {priceExchange} {currencySelected}</Text>
                     <TouchableOpacity>
                         <Image source={require('../../../assets/reload.png')} />
                     </TouchableOpacity>
@@ -48,40 +78,26 @@ const ExchangeCard = () => {
 
                     <ExchangeTextFeild
                         style={{ marginTop: 15 }}
-                        value={coinSelected}
+                        title={coinSelected}
                         showList={coinListOpen}
                         setShowList={setCoinListOpen}
-                        placeholder={'15.00-5000.00'}
-                        editable={true} />
+                        placeholder={'0.00-5000.00'}
+                        editable={true}
+                        getValue={setInputValue} />
 
                     <ExchangeTextFeild
                         style={{ marginTop: 30 }}
-                        value={currencySelected}
+                        title={currencySelected}
                         showList={currencyListOpen}
                         setShowList={setCurrencyListOpen}
                         placeholder={'0.00'}
-                        editable={false} />
+                        editable={false}
+                        textShow={exchangeValue} />
 
-                    {coinListOpen && (<DropDownList
-                        style={{ marginTop: 36 }}
-                        data={coinList}
-                        show={coinListOpen}
-                        setShow={setCoinListOpen}
-                        setSelected={setCoinSelected} />)}
-
-                    {currencyListOpen && (<DropDownList
-                        style={{ marginTop: 44 + 30 + 30 }}
-                        data={currencyList}
-                        show={currencyListOpen}
-                        setShow={setCurrencyListOpen}
-                        setSelected={setCurrencySelected} />)}
-
-                </View>
-                <View style={styles.containerButton}>
                     <TouchableOpacity
-                        style={{ flex: 1 }}
+                        style={styles.containerButton}
                         onPress={() => {
-
+                            setExchangeValue((inputValue * exchangeValue).toFixed(4))
                         }}>
                         <LinearGradient
                             colors={['#FF2CDF', '#8020EF', '#0014FF']}
@@ -94,6 +110,24 @@ const ExchangeCard = () => {
 
                         </LinearGradient>
                     </TouchableOpacity>
+
+                    {coinListOpen && (<DropDownList
+                        style={{ marginTop: 21 }}
+                        data={coinList}
+                        show={coinListOpen}
+                        setShow={setCoinListOpen}
+                        setSelected={setCoinSelected} />)}
+
+                    {currencyListOpen && (<DropDownList
+                        style={{ marginTop: 89 }}
+                        data={currencyList}
+                        show={currencyListOpen}
+                        setShow={setCurrencyListOpen}
+                        setSelected={setCurrencySelected} />)}
+
+                </View>
+                <View style={styles.containerButton}>
+
                 </View>
             </View>
         </View>
@@ -102,13 +136,16 @@ const ExchangeCard = () => {
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 80,
-        margin: 28,
+        marginTop: 30,
         alignItems: 'center',
         backgroundColor: '#1c1933',
-        height: windowHeight / 2.5,
+        height: windowHeight / 2.3,
         width: windowWidth - 28 * 2,
         borderRadius: 25,
+    },
+
+    body: {
+        flex: 1,
     },
 
     input: {
@@ -122,7 +159,7 @@ const styles = StyleSheet.create({
     },
 
     textField: {
-        marginTop: 20,
+        marginTop: 15,
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
@@ -134,7 +171,7 @@ const styles = StyleSheet.create({
     },
 
     containerButton: {
-        marginTop: 30,
+        marginTop: 15,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -149,7 +186,7 @@ const styles = StyleSheet.create({
     },
 
     exchangeText: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 600,
         color: '#FFFFFF',
     }

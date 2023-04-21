@@ -28,7 +28,7 @@ const Card = ({ coin }) => {
         try {
             const response = await axios.get(coinsAPI[coin]);
             const data = await response.data;
-            await setPrices(data.prices)
+            setPrices(data.prices)
             showData()
             setIsLoaded(true)
 
