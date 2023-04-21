@@ -61,7 +61,7 @@ function HomeScreen({ navigation }) {
               <Text style={styles.tokensText}>Tokens</Text>
             </View>
             <View style={styles.cardView}>
-              <FlatList data={listCoins} renderItem={({ item }) => <Card setCoin={item} />} horizontal pagingEnabled snapToAlignment="center" style={{ flex: 1 }}></FlatList>
+              <FlatList data={listCoins} renderItem={({ item }) => <Card coin={item} />} horizontal pagingEnabled snapToAlignment="center" style={{ flex: 1 }}></FlatList>
             </View>
           </View>
         </View>
