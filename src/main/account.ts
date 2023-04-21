@@ -45,7 +45,7 @@ const getAllAccounts = async (wallet: Wallet) => {
   const accounts = [];
   for (let account of accountList) {
     const accBalance = await getAccountBalance(account.address);
-    accounts.push({ ...account, balance: accBalance });
+    accounts.push({ ...account, balance: parseFloat(accBalance).toFixed(5) });
   }
   return accounts;
 };

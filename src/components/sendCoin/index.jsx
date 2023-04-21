@@ -9,11 +9,14 @@ import walletContext from '../../context/walletContext';
 
 import { setAccounts } from '../../store/reducers/account.slice';
 import { setTarget } from '../../store/reducers/accountTarget.slice';
+import { accountSelector } from '../../store/selector';
 
 const windowWidth = Dimensions.get('window').width;
 
 const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
   const account = useSelector(accountTargetSelector);
+  const list_account = useSelector(accountSelector);
+
   const [myWallet, setMyWallet] = useContext(walletContext);
 
   const [to, setTo] = useState();
@@ -25,7 +28,6 @@ const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
   const [transferSuccess, setTransferSuccess] = useState(false);
 
   const dispatch = useDispatch();
-
   useEffect(() => {
     if (account && to && value) {
       const newTransferFee = async () => {
@@ -37,15 +39,32 @@ const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
     }
   }, [to, account, value]);
 
+  const findAccountInWallet = () => {
+    const newAccounts = list_account.map((item) => {
+      if (item.address.toString() === to.toString()) {
+        console.log(typeof item.balance);
+        return { ...item, balance: parseFloat(item.balance) + parseFloat(value) };
+      } else if (item.address.toString() === account.address.toString()) {
+        return { ...item, balance: account.balance - parseFloat(value).toFixed(5) - parseFloat(transferFee).toFixed(5) };
+      }
+      return item;
+    });
+
+    const updateAccTarget = { ...account, balance: account.balance - parseFloat(value).toFixed(5) - parseFloat(transferFee).toFixed(5) };
+
+    dispatch(setTarget(updateAccTarget));
+    dispatch(setAccounts(newAccounts));
+  };
   const handlerTransfer = async () => {
     try {
       setTransferLoading(true);
       setTimeout(async () => {
         await transferETH({ wallet: myWallet, from: account.address, to, value, gasPrice });
         setTransferLoading(false);
-        const accounts = await getAllAccounts(myWallet);
-        dispatch(setAccounts(accounts));
-        dispatch(setTarget(accounts[0]));
+
+        // find receiver Account in wallet
+        findAccountInWallet();
+        //
         setTransferFee(undefined);
         console.log('success transfer');
         setTransferSuccess(true);
@@ -88,10 +107,11 @@ const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
                 <Pressable style={[styles.button, styles.buttonClose]} onPress={() => setModalVisible(!modalVisible)}>
                   <Icon name="chevron-small-down" size={25} color={'white'} />
                 </Pressable>
-                <View style={styles.inputContainer}>
+                <View style={{ ...styles.inputContainer, paddingHorizontal: 0 }}>
                   <Text style={styles.textWhite}>Ngừơi gửi:</Text>
-                  <View style={{ ...styles.textInput }}>
-                    <TextInput style={{ color: 'white', width: '60%' }} editable={false} placeholder={`số dư: ${account.balance}`} />
+                  <View style={{ ...styles.textInput, paddingHorizontal: 10, paddingVertical: 12 }}>
+                    <Text style={{ color: 'white', width: '65%' }}>{`số dư: ${account.balance}`}</Text>
+                    {/* <TextInput style={{ color: 'white', width: '70%' }} editable={false} placeholder={`số dư: ${account.balance}`} /> */}
                   </View>
                 </View>
                 <View style={styles.inputContainer}>

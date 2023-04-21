@@ -15,7 +15,6 @@ import walletContext from '../../context/walletContext';
 import { setAccounts } from '../../store/reducers/account.slice';
 import { setTarget } from '../../store/reducers/accountTarget.slice';
 
-
 function Login({ navigation }) {
   const dispatch = useDispatch();
 
@@ -44,9 +43,13 @@ function Login({ navigation }) {
     setLoading(false);
   };
   const loginFunction = async () => {
-    setLoading(true);
-    const loginResult = await unlockWallet(password);
-    loginResult.status === 'success' ? loginSuccess(loginResult.wallet) : loginFailure();
+    try {
+      setLoading(true);
+      const loginResult = await unlockWallet(password);
+      loginResult.status === 'success' ? loginSuccess(loginResult.wallet) : loginFailure();
+    } catch (error) {
+      loginFailure();
+    }
   };
   // useEffect(() => {
   //   if (isLoading) {

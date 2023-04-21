@@ -42,7 +42,7 @@ const unlockWallet = async (
       wallet,
     };
   } catch (e) {
-    console.error(e);
+    // console.error(e);
     return {
       status: 'fail',
     };
