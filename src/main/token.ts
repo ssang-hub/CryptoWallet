@@ -2,11 +2,25 @@ import { ethers, Wallet } from 'ethers';
 import { moralisApi } from '../api/axios';
 import { sepoliaProvider } from './provider';
 
-const estimateTokenTransferFee = async ({ tokenAddress, to, value, decimals }: { from: string; to: string; value: string; decimals: number; tokenAddress: string }) => {
+const estimateTokenTransferFee = async ({
+  tokenAddress,
+  to,
+  value,
+  decimals,
+  from,
+}: {
+  from: string;
+  to: string;
+  value: string;
+  decimals: number;
+  tokenAddress: string;
+  wallet: Wallet;
+}) => {
   value = ethers.utils.parseUnits(value, decimals).toString();
   const abi = ['function transfer(address to, uint amount) returns (bool)'];
   const contract = new ethers.Contract(tokenAddress, abi, sepoliaProvider);
-  const gas = await contract.estimateGas.transfer(to, value);
+  const encodedFunction = contract.interface.encodeFunctionData('transfer', [to, value]);
+  const gas = await sepoliaProvider.estimateGas({ from, to: tokenAddress, data: encodedFunction });
   const gasPrice = await sepoliaProvider.getGasPrice();
   const fee = gas.mul(gasPrice);
   const feeInEth = ethers.utils.formatEther(fee);
