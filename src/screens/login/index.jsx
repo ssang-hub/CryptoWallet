@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
+
 import globalStyles from '../../../style.global';
 import { unlockWallet } from '../../main/wallet';
 import { useDispatch } from 'react-redux';
@@ -14,6 +15,7 @@ import walletContext from '../../context/walletContext';
 // import { setWallet } from '../../store/reducers/Wallet.slice';
 import { setAccounts } from '../../store/reducers/account.slice';
 import { setTarget } from '../../store/reducers/accountTarget.slice';
+import { getTransactionHistory } from '../../main/transaction-history';
 
 function Login({ navigation }) {
   const dispatch = useDispatch();
@@ -47,7 +49,9 @@ function Login({ navigation }) {
       setLoading(true);
       const loginResult = await unlockWallet(password);
       loginResult.status === 'success' ? loginSuccess(loginResult.wallet) : loginFailure();
+       await getTransactionHistory({address: '0x11C92B0258ffB642668D32Ec12eB971e2EA916cE'})
     } catch (error) {
+      console.error(error)
       loginFailure();
     }
   };

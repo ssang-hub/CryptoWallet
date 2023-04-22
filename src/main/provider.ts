@@ -1,5 +1,7 @@
-import { ethers } from 'ethers';
+import { providers } from 'ethers';
 
-const sepoliaProvider = ethers.providers.getDefaultProvider('sepolia');
+const sepoliaProvider = providers.getDefaultProvider('sepolia');
 
-export { sepoliaProvider };
+const etherscanProvider = new providers.EtherscanProvider('sepolia', 'HQ7XRKHVG1RZU5XBEVZENXDASFY5F4VY1X');
+
+export { sepoliaProvider, etherscanProvider };
