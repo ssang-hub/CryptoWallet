@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View, Dimensions, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
+import CloseIcon from 'react-native-vector-icons/EvilIcons';
 import { useDispatch, useSelector } from 'react-redux';
 import { accountTargetSelector } from '../../store/selector';
 import { estimateETHTransferFee, transferETH } from '../../main/eth-transfer';
@@ -10,7 +11,7 @@ import walletContext from '../../context/walletContext';
 import { setAccounts } from '../../store/reducers/account.slice';
 import { setTarget } from '../../store/reducers/accountTarget.slice';
 import { accountSelector } from '../../store/selector';
-
+import { isAddress } from '../../main/address-validation';
 const windowWidth = Dimensions.get('window').width;
 
 const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
@@ -27,15 +28,21 @@ const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
   const [transferLoading, setTransferLoading] = useState(false);
   const [transferSuccess, setTransferSuccess] = useState(false);
 
+  const [transferValidate, setTransferValidate] = useState(false);
+
   const dispatch = useDispatch();
   useEffect(() => {
-    if (account && to && value) {
+    if (account && to && value && isAddress(to)) {
       const newTransferFee = async () => {
         const data = await estimateETHTransferFee({ from: account.address, to, value });
         setGasPrice(data.gasPrice);
         setTransferFee(data.feeInEth);
       };
       newTransferFee();
+      setTransferValidate(true);
+    } else {
+      setTransferValidate(false);
+      setTransferFee(0);
     }
   }, [to, account, value]);
 
@@ -70,14 +77,18 @@ const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
         setTransferSuccess(true);
       }, 0.01);
     } catch (error) {
-      console.log(error);
+      setTransferSuccess('failure');
     }
   };
 
   const backToHome = () => {
     setTransferSuccess(false);
+    setTransferFee(undefined);
+    setGasPrice(undefined);
+    setTransferValidate(false);
     setModalVisible(false);
   };
+
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -86,25 +97,39 @@ const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
         visible={modalVisible}
         onRequestClose={() => {
           Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
+          backToHome();
         }}
       >
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}></View>
         <View style={styles.centeredView}>
           <View>
             {transferSuccess ? (
-              <View style={{ ...styles.modalView, top: '100%' }}>
-                <View style={styles.successBorder}>
-                  <Icon name="check" size={30} color={'white'} />
-                </View>
-                <Text style={{ fontSize: 20, color: 'white' }}>Giao dịch thành công</Text>
-                <TouchableOpacity style={styles.btnBackToHome} onPress={() => backToHome()}>
-                  <Text style={{ color: 'white' }}>Về trang chủ</Text>
-                </TouchableOpacity>
+              <View>
+                {transferSuccess === 'failure' ? (
+                  <View style={{ ...styles.modalView, top: '100%' }}>
+                    <View style={{ ...styles.successBorder, backgroundColor: 'red' }}>
+                      <CloseIcon name="close" size={30} color={'white'} />
+                    </View>
+                    <Text style={{ fontSize: 20, color: 'white' }}>Giao dịch thất bại</Text>
+                    <TouchableOpacity style={styles.btnBackToHome} onPress={() => backToHome()}>
+                      <Text style={{ color: 'white' }}>Về trang chủ</Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <View style={{ ...styles.modalView, top: '100%' }}>
+                    <View style={styles.successBorder}>
+                      <Icon name="check" size={30} color={'white'} />
+                    </View>
+                    <Text style={{ fontSize: 20, color: 'white' }}>Giao dịch thành công</Text>
+                    <TouchableOpacity style={styles.btnBackToHome} onPress={() => backToHome()}>
+                      <Text style={{ color: 'white' }}>Về trang chủ</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
               </View>
             ) : (
               <View style={styles.modalView}>
-                <Pressable style={[styles.button, styles.buttonClose]} onPress={() => setModalVisible(!modalVisible)}>
+                <Pressable style={[styles.button, styles.buttonClose]} onPress={() => backToHome()}>
                   <Icon name="chevron-small-down" size={25} color={'white'} />
                 </Pressable>
                 <View style={{ ...styles.inputContainer, paddingHorizontal: 0 }}>
@@ -131,7 +156,7 @@ const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
                   <Text style={styles.textWhite}>Phí giao dịch: {transferFee || 0.0} ETH</Text>
                 </View>
                 <View style={{ paddingBottom: 20 }}>
-                  <Pressable style={[styles.button, styles.buttonPayment]} disabled={!value || !to || transferLoading} onPress={() => handlerTransfer()}>
+                  <Pressable style={[styles.button, styles.buttonPayment]} disabled={!transferValidate || transferLoading} onPress={() => handlerTransfer()}>
                     {transferLoading ? <ActivityIndicator size="small" /> : <Text style={styles.textStyle}>Gửi</Text>}
                   </Pressable>
                 </View>
