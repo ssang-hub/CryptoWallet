@@ -15,6 +15,7 @@ import walletContext from '../../context/walletContext';
 import { setAccounts } from '../../store/reducers/account.slice';
 import { setTarget } from '../../store/reducers/accountTarget.slice';
 
+import { CommonActions } from '@react-navigation/native';
 function Login({ navigation }) {
   const dispatch = useDispatch();
 
@@ -31,7 +32,7 @@ function Login({ navigation }) {
       const accounts = await getAllAccounts(wallet);
       dispatch(setAccounts(accounts));
       dispatch(setTarget(accounts[0]));
-      navigation.navigate('home');
+      navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'home' }] }));
       setLoading(false);
     } catch (error) {
       console.log(error);
