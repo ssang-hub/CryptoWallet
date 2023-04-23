@@ -1,14 +1,30 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
 import GroupBarChar from '../../components/BarChar';
 import globalStyles from '../../../style.global';
 import StatisticOptions from '../../components/StatisticOptions';
 import NavBar from '../../components/navbar';
 import PreviousBtn from '../../components/previousBtn';
+import { getCoinPrice } from '../../main/coin-price';
 
 const windowWidth = Dimensions.get('window').width;
 
 function Statistic({ navigation }) {
+  const [coin1, setCoin1] = useState();
+  const [coin2, setCoin2] = useState();
+  useEffect(() => {
+    const handleGetCoinPrice = async () => {
+      try {
+        const coin1Price = await getCoinPrice('ETH');
+        const coin2Price = await getCoinPrice('BTC');
+        setCoin1(coin1Price);
+        setCoin2(coin2Price);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    handleGetCoinPrice();
+  }, []);
   return (
     <View style={{ ...globalStyles.container, ...globalStyles.positionRelative }}>
       <View style={{ ...globalStyles.positionAbsolute }}>
