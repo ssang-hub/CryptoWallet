@@ -3,7 +3,6 @@ import { createSelector } from '@reduxjs/toolkit';
 // export const wallet = (state) => state.wallet;
 
 export const accountTargetSelector = (state) => state.account.acc;
-export const historySelector = (state) => state.account.history;
 
 export const walletSelector = (state) => state.wallet.wallet;
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Image, StyleSheet, Text, FlatList, Dimensions } from 'react-native';
 import ExchangeChart from '../../components/Exchangechart';
 import NavBar from '../../components/navbar';
@@ -6,8 +6,9 @@ import TransactionItem from '../../components/TransactionItem';
 import PrevioustBtn from '../../components/previousBtn';
 import globalStyles from '../../../style.global';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { accountTargetSelector, historySelector } from '../../store/selector';
-import { useSelector } from 'react-redux';
+import { accountTargetSelector } from '../../store/selector';
+import { useDispatch, useSelector } from 'react-redux';
+import { getTransactionHistory } from '../../main/transaction-history';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -18,10 +19,21 @@ function History({ navigation }) {
     { label: 'Apple', value: 'apple' },
     { label: 'Banana', value: 'banana' },
   ]);
-
   const accTarget = useSelector(accountTargetSelector);
 
-  const myhistory = useSelector(historySelector);
+  const [myhistory, setMyHistory] = useState();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const getHistory = async () => {
+      try {
+        const transItems = await getTransactionHistory({ address: accTarget.address });
+        setMyHistory(transItems.data.reverse());
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getHistory();
+  }, [accTarget]);
 
   return (
     <View style={{ ...globalStyles.container, ...globalStyles.positionRelative }}>
@@ -60,11 +72,7 @@ function History({ navigation }) {
             </View>
           </View>
           <View style={{ flex: 5, height: 150 }}>
-            <FlatList data={myhistory} renderItem={({ item }) => <TransactionItem item={item} />} keyExtractor={(item) => item.id} />
-          </View>
-
-          <View style={{ alignItems: 'center' }}>
-            <Text style={{ textDecorationLine: 'underline', color: 'white' }}>Xem thêm</Text>
+            <FlatList data={myhistory} renderItem={({ item }) => <TransactionItem item={item} />} keyExtractor={(item) => item.hash} />
           </View>
         </View>
       </View>
