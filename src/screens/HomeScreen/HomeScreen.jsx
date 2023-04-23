@@ -61,7 +61,7 @@ function HomeScreen({ navigation }) {
               <Text style={styles.tokensText}>Tokens</Text>
             </View>
             <View style={styles.cardView}>
-              <FlatList data={listCoins} renderItem={({ item }) => <Card setCoin={item} />} horizontal pagingEnabled snapToAlignment="center" style={{ flex: 1 }}></FlatList>
+              <FlatList data={listCoins} renderItem={({ item }) => <Card coin={item} />} horizontal pagingEnabled snapToAlignment="center" style={{ flex: 1 }}></FlatList>
             </View>
           </View>
         </View>
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   nameAccount: {
     fontSize: 25,
     textAlign: 'center',
-    marginTop: 140,
+    marginTop: 80,
     color: '#fff',
   },
 
@@ -138,35 +138,6 @@ const styles = StyleSheet.create({
     fontWeight: 300,
     fontSize: 14,
   },
-  receiveModal: {
-    height: windowHeight * 0.6,
-    backgroundColor: '#8a10d3fe',
-    marginHorizontal: 30,
-    borderTopLeftRadius: 5,
-    borderTopRightRadius: 5,
-  },
-
-  closeModal: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1,
-    backgroundColor: '#8c10d0fe',
-  },
-
-  QRCode: { flex: 5 },
-  url: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  copyButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#A25CC2',
-    marginLeft: 20,
-  },
 
   pagerView: {
     height: windowHeight * 0.45,
@@ -199,10 +170,6 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     fontSize: 24,
     color: '#FFFFFF',
-  },
-
-  cardView: {
-    flex: 5,
   },
 
   navbar: {

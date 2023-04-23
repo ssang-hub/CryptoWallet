@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
     View,
     Text,
@@ -6,38 +6,81 @@ import {
     Dimensions,
     TouchableOpacity
 } from "react-native"
+import axios from 'axios'
 
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
+const listButton = ['1h', '1d', '1w']
+const coinsAPI = {
+    Bitcoin: "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=7",
+    Ethereum: "https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=7"
+}
 
-const listButton = ['30m', '1h', '1d']
-
-const Card = () => {
+const Card = ({ coin }) => {
     const [buttonSelected, setSelected] = useState(0)
+    const [isloaded, setIsLoaded] = useState(false)
+    const [prices, setPrices] = useState(0)
+    const [currentPrice, setCurrentPrice] = useState(0)
+    const [priceChange, setPriceChange] = useState(0)
+    const [percentChange, setPercentChange] = useState(0)
+
+    async function fetchData() {
+        try {
+            const response = await axios.get(coinsAPI[coin]);
+            const data = await response.data;
+            setPrices(data.prices)
+            showData()
+            setIsLoaded(true)
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    function showData() {
+        try {
+            setCurrentPrice(prices[prices.length - 1][1]);
+            if (buttonSelected === 0) {
+                setPriceChange((currentPrice - prices[prices.length - 2][1]).toFixed(4));
+            } else if (buttonSelected === 1) {
+                setPriceChange((currentPrice - prices[prices.length - 25][1]).toFixed(4));
+            } else {
+                setPriceChange((currentPrice - prices[0][1]).toFixed(4));
+            }
+            setPercentChange((priceChange / (currentPrice - priceChange) * 100).toFixed(4))
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        console.log('get data');
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        showData()
+    }, [buttonSelected, isloaded])
+
+
     return (
         <View style={styles.card}>
             <View style={styles.cardTop}>
-                <View style={styles.cardTopLeft}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-                        <View style={styles.circle} />
-                        <Text style={{ fontWeight: 600, fontSize: 20, color: '#FFFFFF' }}>USD Coin</Text>
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <Text
-                            style={{ fontWeight: 300, fontSize: 18, color: '#20FC8F', marginRight: 10, }}>+22.4%</Text>
-                        <Text style={{ fontWeight: 300, fontSize: 18, color: '#CACACA' }}>{listButton[buttonSelected]}</Text>
-                    </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+                    <View style={styles.circle} />
+                    <Text style={{ fontWeight: 600, fontSize: 18, color: '#FFFFFF' }}>{coin}</Text>
                 </View>
-                <View style={styles.cardTopRight}>
-                    <Text>ve bieu do</Text>
+                <View >
+                    <Text style={{ fontWeight: 500, fontSize: 16, color: '#CACACA', marginTop: 7, }}>{currentPrice + "$"}</Text>
                 </View>
+
             </View>
             <View style={styles.cardCenter}>
                 <View style={{ flex: 1, borderRightWidth: 1, borderRightColor: '#373070', justifyContent: 'center', marginVertical: 12 }}>
-                    <Text style={styles.cardCenterText}>$45,678,123</Text>
+                    <Text style={styles.cardCenterText}>{priceChange + "$"}</Text>
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center', marginVertical: 12 }}>
-                    <Text style={styles.cardCenterText}>-12.77{'('}20%{')'}</Text>
+                    <Text style={styles.cardCenterText}>{percentChange + "%"}</Text>
                 </View>
             </View>
             <View style={styles.cardBottom}>
@@ -71,36 +114,26 @@ const styles = StyleSheet.create({
 
     tokensText: {
         fontWeight: 600,
-        fontSize: 24,
+        fontSize: 20,
         color: '#FFFFFF',
     },
 
     cardView: {
-        flex: 5,
+        flex: 6,
     },
 
     card: {
         backgroundColor: '#292452',
         width: windowWidth - 80,
         marginHorizontal: 40,
-        marginBottom: 50,
+        marginBottom: 60,
         borderRadius: 20,
     },
 
     cardTop: {
-        flex: 2,
-        margin: 18,
-        flexDirection: 'row',
-    },
-
-    cardTopLeft: {
-        flex: 1,
-        justifyContent: 'space-around',
-        alignItems: 'center',
-    },
-
-    cardTopRight: {
-        flex: 1,
+        flex: 1.5,
+        margin: 14,
+        justifyContent: 'center',
         alignItems: 'center',
     },
 
@@ -120,13 +153,13 @@ const styles = StyleSheet.create({
         borderTopColor: '#373070',
         borderTopWidth: 1,
         alignItems: 'center',
-        marginHorizontal: 20,
+        marginHorizontal: 14,
     },
     cardCenterText: {
         flex: 1,
-        color: '#CACACA',
-        fontSize: 20,
-        fontWeight: 500,
+        color: '#20FC8F',
+        fontSize: 15,
+        fontWeight: 400,
         textAlign: 'center',
     },
 
@@ -141,8 +174,8 @@ const styles = StyleSheet.create({
     buttonSelected: {
         justifyContent: 'center',
         alignItems: 'center',
-        width: 60,
-        height: 28,
+        width: 55,
+        height: 26,
         backgroundColor: '#373070',
         borderColor: '#373070',
         borderRadius: 5,
@@ -153,8 +186,8 @@ const styles = StyleSheet.create({
     buttonUnselected: {
         justifyContent: 'center',
         alignItems: 'center',
-        width: 60,
-        height: 28,
+        width: 55,
+        height: 24,
         borderColor: '#373070',
         borderRadius: 5,
         borderWidth: 1,
@@ -164,7 +197,7 @@ const styles = StyleSheet.create({
     textbutton: {
         color: '#FFFFFF',
         fontWeight: 500,
-        fontSize: 15,
+        fontSize: 14,
     },
 
 })
