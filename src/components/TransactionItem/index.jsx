@@ -11,13 +11,15 @@ const TransactionItem = ({ item }) => {
             <View style={styles.statusItem} />
           </View>
           <View style={{ width: 150 }}>
-            <Text style={styles.textWhite}>{item.name}</Text>
-            <Text style={styles.textWhite}>Arp 22</Text>
+            <Text style={styles.textWhite}>{item.symbol}</Text>
+            <Text style={styles.textWhite}>{item.date}</Text>
           </View>
         </View>
 
         <View style={{ justifyContent: 'center' }}>
-          <Text style={styles.textWhite}>-${item.price}</Text>
+          <Text style={styles.textWhite}>
+            {item.type === 'send' ? '- ' : '+ '}${item.value}
+          </Text>
         </View>
       </View>
     </View>

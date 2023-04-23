@@ -31,7 +31,6 @@ function Login({ navigation }) {
       const accounts = await getAllAccounts(wallet);
       dispatch(setAccounts(accounts));
       dispatch(setTarget(accounts[0]));
-
       navigation.navigate('home');
       setLoading(false);
     } catch (error) {
