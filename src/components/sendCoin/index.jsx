@@ -4,17 +4,19 @@ import Icon from 'react-native-vector-icons/Entypo';
 import CloseIcon from 'react-native-vector-icons/EvilIcons';
 import { useDispatch, useSelector } from 'react-redux';
 import { accountTargetSelector } from '../../store/selector';
-import { estimateETHTransferFee, transferETH } from '../../main/eth-transfer';
-import { getAllAccounts } from '../../main/account';
 import walletContext from '../../context/walletContext';
 
 import { setAccounts } from '../../store/reducers/account.slice';
 import { setTarget } from '../../store/reducers/accountTarget.slice';
 import { accountSelector } from '../../store/selector';
 import { isAddress } from '../../main/address-validation';
+
+import { estimateETHTransferFee, transferETH } from '../../main/eth-transfer';
+import { estimateTokenTransferFee, transferToken } from '../../main/token';
+
 const windowWidth = Dimensions.get('window').width;
 
-const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
+const sendCoinContainer = ({ modalVisible, setModalVisible, tokenSend, setTokenSend }) => {
   const account = useSelector(accountTargetSelector);
   const list_account = useSelector(accountSelector);
 
@@ -33,12 +35,21 @@ const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
   const dispatch = useDispatch();
   useEffect(() => {
     if (account && to && value && isAddress(to)) {
-      const newTransferFee = async () => {
-        const data = await estimateETHTransferFee({ from: account.address, to, value });
-        setGasPrice(data.gasPrice);
-        setTransferFee(data.feeInEth);
-      };
-      newTransferFee();
+      if (!tokenSend) {
+        const newTransferFee = async () => {
+          const data = await estimateETHTransferFee({ from: account.address, to, value });
+          setGasPrice(data.gasPrice);
+          setTransferFee(data.feeInEth);
+        };
+        newTransferFee();
+      } else {
+        const newTransferTokenFee = async () => {
+          const data = await estimateTokenTransferFee({ from: account.address, to, value, wallet: myWallet, decimals: tokenSend.decimals, tokenAddress: tokenSend.token_address });
+          setGasPrice(data.gasPrice);
+          setTransferFee(data.feeInEth);
+        };
+        newTransferTokenFee();
+      }
       setTransferValidate(true);
     } else {
       setTransferValidate(false);
@@ -81,10 +92,25 @@ const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
     }
   };
 
+  const handlerTransferToken = async () => {
+    try {
+      setTransferLoading(true);
+      setTimeout(async () => {
+        await transferToken({ wallet: myWallet, from: account.address, to, value, decimals: tokenSend.decimals, tokenAddress: tokenSend.token_address });
+        setTransferLoading(false);
+        setTransferFee(undefined);
+        console.log('success transfer');
+        setTransferSuccess(true);
+      }, 0.01);
+    } catch (error) {
+      setTransferSuccess('failure');
+    }
+  };
   const backToHome = () => {
     setTransferSuccess(false);
     setTransferFee(undefined);
     setGasPrice(undefined);
+    setTokenSend(undefined);
     setTransferValidate(false);
     setModalVisible(false);
   };
@@ -135,7 +161,7 @@ const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
                 <View style={{ ...styles.inputContainer, paddingHorizontal: 0 }}>
                   <Text style={styles.textWhite}>Ngừơi gửi:</Text>
                   <View style={{ ...styles.textInput, paddingHorizontal: 10, paddingVertical: 12 }}>
-                    <Text style={{ color: 'white', width: '65%' }}>{`số dư: ${account.balance}`}</Text>
+                    <Text style={{ color: 'white', width: '65%' }}>{`số dư: ${tokenSend ? `${tokenSend.balance}  ${tokenSend.symbol}` : account.balance}`}</Text>
                     {/* <TextInput style={{ color: 'white', width: '70%' }} editable={false} placeholder={`số dư: ${account.balance}`} /> */}
                   </View>
                 </View>
@@ -146,7 +172,7 @@ const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
                   </View>
                 </View>
                 <View style={styles.inputContainer}>
-                  <Text style={styles.textWhite}>Số coin gửi:</Text>
+                  <Text style={styles.textWhite}>Số {tokenSend ? 'token' : 'coin'} gửi:</Text>
                   <View style={{ ...styles.textInput }}>
                     <TextInput style={{ color: 'white', width: '60%' }} onChangeText={(numberCoin) => setValue(numberCoin)} />
                   </View>
@@ -156,7 +182,11 @@ const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
                   <Text style={styles.textWhite}>Phí giao dịch: {transferFee || 0.0} ETH</Text>
                 </View>
                 <View style={{ paddingBottom: 20 }}>
-                  <Pressable style={[styles.button, styles.buttonPayment]} disabled={!transferValidate || transferLoading} onPress={() => handlerTransfer()}>
+                  <Pressable
+                    style={[styles.button, styles.buttonPayment]}
+                    disabled={!transferValidate || transferLoading}
+                    onPress={tokenSend ? handlerTransferToken : handlerTransfer}
+                  >
                     {transferLoading ? <ActivityIndicator size="small" /> : <Text style={styles.textStyle}>Gửi</Text>}
                   </Pressable>
                 </View>

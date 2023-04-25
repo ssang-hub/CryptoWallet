@@ -33,6 +33,7 @@ const transferToken = async ({
   value,
   decimals,
   wallet,
+  from,
 }: {
   from: string;
   to: string;
@@ -58,6 +59,8 @@ const getTokenList = async (address: string) => {
       balance: string;
     }[]
   >(`/${address}/erc20?chain=sepolia`);
+  console.log('ok');
+
   const tokens: {
     token_address: string;
     name: string;
@@ -74,7 +77,7 @@ const getTokenList = async (address: string) => {
     const tokenHistoricalPrice = await getTokenHistoricalPrice({ tokenAddress: '0xB8c77482e45F1F44dE1745F52C74426C631bDD52' });
     tokens.push({ ...token, balance: ethers.utils.formatEther(token.balance), tokenHistoricalPrice });
   }
-  console.log(JSON.stringify(tokens), 'tokens');
+  // console.log(JSON.stringify(tokens), 'tokens');
   return tokens;
 };
 
