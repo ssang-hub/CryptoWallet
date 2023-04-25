@@ -59,7 +59,6 @@ const getTokenList = async (address: string) => {
       balance: string;
     }[]
   >(`/${address}/erc20?chain=sepolia`);
-  console.log('ok');
 
   const tokens: {
     token_address: string;

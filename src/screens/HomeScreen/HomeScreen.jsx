@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Dimensions, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Dimensions, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useSelector } from 'react-redux';
 import Card from './Card';
 import NavBar from '../../components/navbar';
@@ -20,13 +20,16 @@ function HomeScreen({ navigation }) {
   const [visibleSend, setVisibleSend] = useState(false);
   const [tokens, setTokens] = useState([]);
 
+  const [getTokenLoading, setGetTokenLoading] = useState(false);
+
   const [tokenSend, setTokenSend] = useState();
 
   const accTarget = useSelector(accountTargetSelector);
   useEffect(() => {
     const getAllTokens = async () => {
-      console.log('address: ' + accTarget.address);
+      setGetTokenLoading(true);
       const tokensData = await getTokenList(accTarget.address);
+      setGetTokenLoading(false);
       setTokens(tokensData);
     };
     getAllTokens();
@@ -82,14 +85,20 @@ function HomeScreen({ navigation }) {
               <Text style={styles.tokensText}>Tokens</Text>
             </View>
             <View style={styles.cardView}>
-              <FlatList
-                data={tokens}
-                renderItem={({ item }) => <Card token={item} handleSendToken={handleSendToken} />}
-                horizontal
-                pagingEnabled
-                snapToAlignment="center"
-                style={{ flex: 1 }}
-              ></FlatList>
+              {getTokenLoading ? (
+                <View style={{ marginTop: 10 }}>
+                  <ActivityIndicator size={60} />
+                </View>
+              ) : (
+                <FlatList
+                  data={tokens}
+                  renderItem={({ item }) => <Card token={item} handleSendToken={handleSendToken} />}
+                  horizontal
+                  pagingEnabled
+                  snapToAlignment="center"
+                  style={{ flex: 1 }}
+                ></FlatList>
+              )}
             </View>
           </View>
         </View>
