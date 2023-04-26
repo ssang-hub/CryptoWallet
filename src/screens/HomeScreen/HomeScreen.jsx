@@ -1,22 +1,46 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Dimensions, Image, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, Dimensions, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useSelector } from 'react-redux';
 import Card from './Card';
 import NavBar from '../../components/navbar';
 import QRCodeReceiver from '../../components/QRCode';
 import SendCoin from '../../components/sendCoin';
 import { accountTargetSelector } from '../../store/selector';
+
+import { getTokenList, estimateTokenTransferFee, transferToken } from '../../main/token';
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+// const listCoins = ['Bitcoin', 'Ethereum'];
 
-const listCoins = ['Bitcoin', 'Ethereum'];
 const listButton = ['30m', '1h', '1d'];
 
 function HomeScreen({ navigation }) {
   const [visibleReceive, setVisibleReceive] = useState(false);
   const [visibleSend, setVisibleSend] = useState(false);
+  const [tokens, setTokens] = useState([]);
+
+  const [getTokenLoading, setGetTokenLoading] = useState(false);
+
+  const [tokenSend, setTokenSend] = useState();
 
   const accTarget = useSelector(accountTargetSelector);
+  useEffect(() => {
+    const getAllTokens = async () => {
+      setGetTokenLoading(true);
+      const tokensData = await getTokenList(accTarget.address);
+      setGetTokenLoading(false);
+      setTokens(tokensData);
+    };
+    getAllTokens();
+  }, [accTarget]);
+
+  // handle send token request
+  const handleSendToken = async (token) => {
+    setTokenSend(token);
+    setVisibleSend(true);
+  };
+
   return (
     <View style={visibleReceive ? { flex: 1, opacity: 0.7 } : { flex: 1 }}>
       <Image source={require('../../../assets/bgImg.png')} style={styles.imageBG} />
@@ -47,7 +71,7 @@ function HomeScreen({ navigation }) {
                 <Text style={styles.funtionText}>Nhận</Text>
               </TouchableOpacity>
               <QRCodeReceiver modalVisible={visibleReceive} setModalVisible={setVisibleReceive} />
-              <SendCoin modalVisible={visibleSend} setModalVisible={setVisibleSend} />
+              <SendCoin modalVisible={visibleSend} setModalVisible={setVisibleSend} tokenSend={tokenSend} setTokenSend={setTokenSend} />
               <TouchableOpacity>
                 <View style={styles.functionIcon}>
                   <Image source={require('../../../assets/send.png')} />
@@ -61,7 +85,20 @@ function HomeScreen({ navigation }) {
               <Text style={styles.tokensText}>Tokens</Text>
             </View>
             <View style={styles.cardView}>
-              <FlatList data={listCoins} renderItem={({ item }) => <Card coin={item} />} horizontal pagingEnabled snapToAlignment="center" style={{ flex: 1 }}></FlatList>
+              {getTokenLoading ? (
+                <View style={{ marginTop: 10 }}>
+                  <ActivityIndicator size={60} />
+                </View>
+              ) : (
+                <FlatList
+                  data={tokens}
+                  renderItem={({ item }) => <Card token={item} handleSendToken={handleSendToken} />}
+                  horizontal
+                  pagingEnabled
+                  snapToAlignment="center"
+                  style={{ flex: 1 }}
+                ></FlatList>
+              )}
             </View>
           </View>
         </View>

@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getTransactionHistory } from '../../main/transaction-history';
 
 const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 function History({ navigation }) {
   const [open, setOpen] = useState(false);
@@ -45,7 +46,7 @@ function History({ navigation }) {
             <PrevioustBtn navigation={navigation} />
             <Text style={{ color: 'white', fontSize: 20, marginLeft: 80 }}>Lịch sử giao dịch</Text>
           </View>
-          <View style={{ width: windowWidth, ...globalStyles.centerInView }}>
+          {/* <View style={{ width: windowWidth, ...globalStyles.centerInView }}>
             <View style={styles.chart}>
               <View style={{ zIndex: 2, width: '70%', flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View>
@@ -70,8 +71,8 @@ function History({ navigation }) {
               </View>
               <ExchangeChart />
             </View>
-          </View>
-          <View style={{ flex: 5, height: 150 }}>
+          </View> */}
+          <View style={{ flex: 5, marginTop: 30, height: windowHeight * 0.65 }}>
             <FlatList data={myhistory} renderItem={({ item }) => <TransactionItem item={item} />} keyExtractor={(item) => item.hash} />
           </View>
         </View>
