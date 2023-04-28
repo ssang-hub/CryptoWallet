@@ -5,6 +5,7 @@ import CloseIcon from 'react-native-vector-icons/EvilIcons';
 import { useDispatch, useSelector } from 'react-redux';
 import { accountTargetSelector } from '../../store/selector';
 
+
 import { setAccounts } from '../../store/reducers/account.slice';
 import { setTarget } from '../../store/reducers/accountTarget.slice';
 import { accountSelector } from '../../store/selector';
@@ -13,11 +14,9 @@ import { isAddress } from '../../main/address-validation';
 import { estimateETHTransferFee, transferETH } from '../../main/eth-transfer';
 import { estimateTokenTransferFee, transferToken } from '../../main/token';
 
-import walletContext from '../../context/walletContext';
-import ScanQRCode from '../../components/ScanQRCode';
 const windowWidth = Dimensions.get('window').width;
 
-const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
+const sendCoinContainer = ({ modalVisible, setModalVisible, tokenSend, setTokenSend }) => {
   const account = useSelector(accountTargetSelector);
   const list_account = useSelector(accountSelector);
 
@@ -33,17 +32,24 @@ const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
 
   const [transferValidate, setTransferValidate] = useState(false);
 
-  const [showScanQRCode, setShowScanQRCode] = useState(false);
-
   const dispatch = useDispatch();
   useEffect(() => {
     if (account && to && value && isAddress(to)) {
-      const newTransferFee = async () => {
-        const data = await estimateETHTransferFee({ from: account.address, to, value });
-        setGasPrice(data.gasPrice);
-        setTransferFee(data.feeInEth);
-      };
-      newTransferFee();
+      if (!tokenSend) {
+        const newTransferFee = async () => {
+          const data = await estimateETHTransferFee({ from: account.address, to, value });
+          setGasPrice(data.gasPrice);
+          setTransferFee(data.feeInEth);
+        };
+        newTransferFee();
+      } else {
+        const newTransferTokenFee = async () => {
+          const data = await estimateTokenTransferFee({ from: account.address, to, value, wallet: myWallet, decimals: tokenSend.decimals, tokenAddress: tokenSend.token_address });
+          setGasPrice(data.gasPrice);
+          setTransferFee(data.feeInEth);
+        };
+        newTransferTokenFee();
+      }
       setTransferValidate(true);
     } else {
       setTransferValidate(false);
@@ -86,19 +92,27 @@ const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
     }
   };
 
-  const handleScanResult = (reultScan) => {
-    setModalVisible(true);
-    setTo(reultScan);
-    console.log(reultScan);
+  const handlerTransferToken = async () => {
+    try {
+      setTransferLoading(true);
+      setTimeout(async () => {
+        await transferToken({ wallet: myWallet, from: account.address, to, value, decimals: tokenSend.decimals, tokenAddress: tokenSend.token_address });
+        setTransferLoading(false);
+        setTransferFee(undefined);
+        console.log('success transfer');
+        setTransferSuccess(true);
+      }, 0.01);
+    } catch (error) {
+      setTransferSuccess('failure');
+    }
   };
-
   const backToHome = () => {
     setTransferSuccess(false);
     setTransferFee(undefined);
     setGasPrice(undefined);
+    setTokenSend(undefined);
     setTransferValidate(false);
     setModalVisible(false);
-    setShowScanQRCode(false);
   };
 
   return (
@@ -112,77 +126,74 @@ const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
           backToHome();
         }}
       >
-        {!showScanQRCode && <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}></View>}
-        {showScanQRCode ? (
-          <ScanQRCode setShowScanQRCode={setShowScanQRCode} showScanQRCode={showScanQRCode} handleScanResult={handleScanResult} />
-        ) : (
-          <View style={styles.centeredView}>
-            <View>
-              {transferSuccess ? (
-                <View>
-                  {transferSuccess === 'failure' ? (
-                    <View style={{ ...styles.modalView, top: '100%' }}>
-                      <View style={{ ...styles.successBorder, backgroundColor: 'red' }}>
-                        <CloseIcon name="close" size={30} color={'white'} />
-                      </View>
-                      <Text style={{ fontSize: 20, color: 'white' }}>Giao dịch thất bại</Text>
-                      <TouchableOpacity style={styles.btnBackToHome} onPress={() => backToHome()}>
-                        <Text style={{ color: 'white' }}>Về trang chủ</Text>
-                      </TouchableOpacity>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}></View>
+        <View style={styles.centeredView}>
+          <View>
+            {transferSuccess ? (
+              <View>
+                {transferSuccess === 'failure' ? (
+                  <View style={{ ...styles.modalView, top: '100%' }}>
+                    <View style={{ ...styles.successBorder, backgroundColor: 'red' }}>
+                      <CloseIcon name="close" size={30} color={'white'} />
                     </View>
-                  ) : (
-                    <View style={{ ...styles.modalView, top: '100%' }}>
-                      <View style={styles.successBorder}>
-                        <Icon name="check" size={30} color={'white'} />
-                      </View>
-                      <Text style={{ fontSize: 20, color: 'white' }}>Giao dịch thành công</Text>
-                      <TouchableOpacity style={styles.btnBackToHome} onPress={() => backToHome()}>
-                        <Text style={{ color: 'white' }}>Về trang chủ</Text>
-                      </TouchableOpacity>
+                    <Text style={{ fontSize: 20, color: 'white' }}>Giao dịch thất bại</Text>
+                    <TouchableOpacity style={styles.btnBackToHome} onPress={() => backToHome()}>
+                      <Text style={{ color: 'white' }}>Về trang chủ</Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <View style={{ ...styles.modalView, top: '100%' }}>
+                    <View style={styles.successBorder}>
+                      <Icon name="check" size={30} color={'white'} />
                     </View>
-                  )}
+                    <Text style={{ fontSize: 20, color: 'white' }}>Giao dịch thành công</Text>
+                    <TouchableOpacity style={styles.btnBackToHome} onPress={() => backToHome()}>
+                      <Text style={{ color: 'white' }}>Về trang chủ</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            ) : (
+              <View style={styles.modalView}>
+                <Pressable style={[styles.button, styles.buttonClose]} onPress={() => backToHome()}>
+                  <Icon name="chevron-small-down" size={25} color={'white'} />
+                </Pressable>
+                <View style={{ ...styles.inputContainer, paddingHorizontal: 0 }}>
+                  <Text style={styles.textWhite}>Ngừơi gửi:</Text>
+                  <View style={{ ...styles.textInput, paddingHorizontal: 10, paddingVertical: 12 }}>
+                    <Text style={{ color: 'white', width: '65%' }}>{`số dư: ${tokenSend ? `${tokenSend.balance}  ${tokenSend.symbol}` : account.balance}`}</Text>
+                    {/* <TextInput style={{ color: 'white', width: '70%' }} editable={false} placeholder={`số dư: ${account.balance}`} /> */}
+                  </View>
                 </View>
-              ) : (
-                <View style={styles.modalView}>
-                  <Pressable style={[styles.button, styles.buttonClose]} onPress={() => backToHome()}>
-                    <Icon name="chevron-small-down" size={25} color={'white'} />
-                  </Pressable>
-                  <View style={{ ...styles.inputContainer, paddingHorizontal: 0 }}>
-                    <Text style={styles.textWhite}>Ngừơi gửi:</Text>
-                    <View style={{ ...styles.textInput, paddingHorizontal: 10, paddingVertical: 12 }}>
-                      <Text style={{ color: 'white', width: '65%' }}>{`số dư: ${account.balance}`}</Text>
-                      {/* <TextInput style={{ color: 'white', width: '70%' }} editable={false} placeholder={`số dư: ${account.balance}`} /> */}
-                    </View>
+                <View style={styles.inputContainer}>
+                  <Text style={styles.textWhite}>Ngừơi nhận:</Text>
+                  <View style={{ ...styles.textInput }}>
+                    <TextInput style={{ color: 'white', width: '60%' }} onChangeText={(address) => setTo(address)} />
                   </View>
-                  <View style={styles.inputContainer}>
-                    <Text style={styles.textWhite}>Ngừơi nhận:</Text>
-                    <View style={{ ...styles.textInput }}>
-                      <TextInput style={{ color: 'white', width: '60%' }} value={to} onChangeText={(address) => setTo(address)} />
-                    </View>
+                </View>
+                <View style={styles.inputContainer}>
+                  <Text style={styles.textWhite}>Số {tokenSend ? 'token' : 'coin'} gửi:</Text>
+                  <View style={{ ...styles.textInput }}>
+                    <TextInput style={{ color: 'white', width: '60%' }} onChangeText={(numberCoin) => setValue(numberCoin)} />
                   </View>
-                  <View style={styles.inputContainer}>
-                    <Text style={styles.textWhite}>Số coin gửi:</Text>
-                    <View style={{ ...styles.textInput }}>
-                      <TextInput style={{ color: 'white', width: '60%' }} onChangeText={(numberCoin) => setValue(numberCoin)} />
-                    </View>
-                  </View>
+                </View>
 
-                  <View style={{ marginVertical: 20 }}>
-                    <Text style={styles.textWhite}>Phí giao dịch: {transferFee || 0.0} ETH</Text>
-                  </View>
-                  <View style={{ paddingBottom: 20, flexDirection: 'row' }}>
-                    <Pressable style={[styles.button, styles.buttonPayment]} disabled={!transferValidate || transferLoading || !transferFee} onPress={() => handlerTransfer()}>
-                      {transferLoading ? <ActivityIndicator size="small" /> : <Text style={styles.textStyle}>Gửi</Text>}
-                    </Pressable>
-                    <Pressable disabled={transferLoading} style={{ marginLeft: 30, ...styles.button, ...styles.buttonPayment }} onPress={() => setShowScanQRCode(true)}>
-                      <Text style={styles.textStyle}>Quét mã</Text>
-                    </Pressable>
-                  </View>
+                <View style={{ marginVertical: 20 }}>
+                  <Text style={styles.textWhite}>Phí giao dịch: {transferFee || 0.0} ETH</Text>
                 </View>
-              )}
-            </View>
+                <View style={{ paddingBottom: 20 }}>
+                  <Pressable
+                    style={[styles.button, styles.buttonPayment]}
+                    disabled={!transferValidate || transferLoading}
+                    onPress={tokenSend ? handlerTransferToken : handlerTransfer}
+                  >
+                    {transferLoading ? <ActivityIndicator size="small" /> : <Text style={styles.textStyle}>Gửi</Text>}
+                  </Pressable>
+                </View>
+              </View>
+            )}
           </View>
-        )}
+        </View>
       </Modal>
     </View>
   );
@@ -239,7 +250,7 @@ const styles = StyleSheet.create({
   },
   buttonPayment: {
     backgroundColor: '#A25CC2',
-    paddingHorizontal: 50,
+    paddingHorizontal: 80,
     border: 0,
   },
   textStyle: {

@@ -21,7 +21,6 @@
     "date-fns": "^2.29.3",
     "ethers": "^5.7.2",
     "expo": "^48.0.10",
-    "expo-barcode-scanner": "^12.3.2",
     "expo-clipboard": "~4.1.2",
     "expo-crypto": "^12.2.1",
     "expo-linear-gradient": "^12.1.2",
