@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/Entypo';
 import CloseIcon from 'react-native-vector-icons/EvilIcons';
 import { useDispatch, useSelector } from 'react-redux';
 import { accountTargetSelector } from '../../store/selector';
-
+import walletContext from '../../context/walletContext';
 
 import { setAccounts } from '../../store/reducers/account.slice';
 import { setTarget } from '../../store/reducers/accountTarget.slice';
@@ -31,7 +31,7 @@ const sendCoinContainer = ({ modalVisible, setModalVisible, tokenSend, setTokenS
   const [transferSuccess, setTransferSuccess] = useState(false);
 
   const [transferValidate, setTransferValidate] = useState(false);
-
+  const [showScanQRCode, setShowScanQRCode] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
     if (account && to && value && isAddress(to)) {
@@ -177,17 +177,20 @@ const sendCoinContainer = ({ modalVisible, setModalVisible, tokenSend, setTokenS
                     <TextInput style={{ color: 'white', width: '60%' }} onChangeText={(numberCoin) => setValue(numberCoin)} />
                   </View>
                 </View>
-
                 <View style={{ marginVertical: 20 }}>
                   <Text style={styles.textWhite}>Phí giao dịch: {transferFee || 0.0} ETH</Text>
                 </View>
-                <View style={{ paddingBottom: 20 }}>
+
+                <View style={{ paddingBottom: 20, flexDirection: 'row' }}>
                   <Pressable
                     style={[styles.button, styles.buttonPayment]}
-                    disabled={!transferValidate || transferLoading}
+                    disabled={!transferValidate || transferLoading || !transferFee}
                     onPress={tokenSend ? handlerTransferToken : handlerTransfer}
                   >
                     {transferLoading ? <ActivityIndicator size="small" /> : <Text style={styles.textStyle}>Gửi</Text>}
+                  </Pressable>
+                  <Pressable disabled={transferLoading} style={{ marginLeft: 30, ...styles.button, ...styles.buttonPayment }} onPress={() => setShowScanQRCode(true)}>
+                    <Text style={styles.textStyle}>Quét mã</Text>
                   </Pressable>
                 </View>
               </View>
