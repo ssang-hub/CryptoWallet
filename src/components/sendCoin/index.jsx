@@ -7,8 +7,6 @@ import CloseIcon from 'react-native-vector-icons/EvilIcons';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { accountTargetSelector } from '../../store/selector';
-import { estimateETHTransferFee, transferETH } from '../../main/eth-transfer';
-
 import walletContext from '../../context/walletContext';
 import ScanQRCode from '../../components/ScanQRCode';
 import { setAccounts } from '../../store/reducers/account.slice';
