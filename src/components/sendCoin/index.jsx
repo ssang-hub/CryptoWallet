@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/Entypo';
 import CloseIcon from 'react-native-vector-icons/EvilIcons';
 import { useDispatch, useSelector } from 'react-redux';
 import { accountTargetSelector } from '../../store/selector';
-import walletContext from '../../context/walletContext';
+
 
 import { setAccounts } from '../../store/reducers/account.slice';
 import { setTarget } from '../../store/reducers/accountTarget.slice';
