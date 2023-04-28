@@ -7,12 +7,14 @@ import CloseIcon from 'react-native-vector-icons/EvilIcons';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { accountTargetSelector } from '../../store/selector';
-import walletContext from '../../context/walletContext';
-import ScanQRCode from '../../components/ScanQRCode';
+
 import { setAccounts } from '../../store/reducers/account.slice';
 import { setTarget } from '../../store/reducers/accountTarget.slice';
 import { accountSelector } from '../../store/selector';
 import { isAddress } from '../../main/address-validation';
+
+import walletContext from '../../context/walletContext';
+import ScanQRCode from '../../components/ScanQRCode';
 const windowWidth = Dimensions.get('window').width;
 
 const sendCoinContainer = ({ modalVisible, setModalVisible }) => {
