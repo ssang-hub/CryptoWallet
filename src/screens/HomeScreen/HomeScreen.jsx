@@ -7,7 +7,9 @@ import QRCodeReceiver from '../../components/QRCode';
 import SendCoin from '../../components/sendCoin';
 import { accountTargetSelector } from '../../store/selector';
 
-import { getTokenList, estimateTokenTransferFee, transferToken } from '../../main/token';
+import { getTokenList } from '../../main/token';
+import { getAccountBalance } from '../../main/account';
+import { setTarget } from '../../store/reducers/accountTarget.slice';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -36,6 +38,18 @@ function HomeScreen({ navigation }) {
   }, [accTarget]);
 
   // handle send token request
+  useEffect(() => {
+    const id = setInterval(async () => {
+      const balance = await getAccountBalance(accTarget.address);
+      const tokenList = await getTokenList(accTarget.address);
+      setTokens(tokenList);
+      setTarget({ ...accTarget, balance });
+      console.log('new Balance');
+    }, 20000);
+    return () => {
+      clearInterval(id);
+    };
+  }, [accTarget]);
   const handleSendToken = async (token) => {
     setTokenSend(token);
     setVisibleSend(true);
