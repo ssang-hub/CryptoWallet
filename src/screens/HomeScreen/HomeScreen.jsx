@@ -45,7 +45,7 @@ function HomeScreen({ navigation }) {
       setTokens(tokenList);
       setTarget({ ...accTarget, balance });
       console.log('new Balance');
-    }, 20000);
+    }, 30000);
     return () => {
       clearInterval(id);
     };

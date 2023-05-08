@@ -38,7 +38,7 @@ const QRCodeContainer = ({ modalVisible, setModalVisible }) => {
                 <Icon name="chevron-small-down" size={25} color={'white'} />
               </Pressable>
               <View style={{ paddingVertical: 30 }}>
-                <QRCode size={150} value="https://google.com" backgroundColor="#8020EF" color="white" />
+                <QRCode size={150} value={addressWallet} backgroundColor="#8020EF" color="white" />
               </View>
               <View style={styles.textInput}>
                 <TextInput style={{ color: 'white', width: '60%' }} editable={false} value={addressWallet} />
