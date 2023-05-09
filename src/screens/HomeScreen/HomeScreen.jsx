@@ -85,7 +85,14 @@ function HomeScreen({ navigation }) {
                 <Text style={styles.funtionText}>Nhận</Text>
               </TouchableOpacity>
               <QRCodeReceiver modalVisible={visibleReceive} setModalVisible={setVisibleReceive} />
-              <SendCoin modalVisible={visibleSend} setModalVisible={setVisibleSend} tokenSend={tokenSend} setTokenSend={setTokenSend} />
+              <SendCoin
+                modalVisible={visibleSend}
+                setModalVisible={setVisibleSend}
+                tokenSend={tokenSend}
+                setTokenSend={setTokenSend}
+                setTokens={setTokens}
+                address={accTarget.address}
+              />
               <TouchableOpacity>
                 <View style={styles.functionIcon}>
                   <Image source={require('../../../assets/send.png')} />

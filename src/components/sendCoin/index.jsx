@@ -14,10 +14,11 @@ import { isAddress } from '../../main/address-validation';
 import { estimateETHTransferFee, transferETH } from '../../main/eth-transfer';
 import { estimateTokenTransferFee, transferToken } from '../../main/token';
 import ScanQRCode from '../../components/ScanQRCode';
+import { getTokenList } from '../../main/token';
 
 const windowWidth = Dimensions.get('window').width;
 
-const sendCoinContainer = ({ modalVisible, setModalVisible, tokenSend, setTokenSend }) => {
+const sendCoinContainer = ({ modalVisible, setModalVisible, tokenSend, setTokenSend, setTokens, address }) => {
   const account = useSelector(accountTargetSelector);
   const list_account = useSelector(accountSelector);
 
@@ -100,6 +101,8 @@ const sendCoinContainer = ({ modalVisible, setModalVisible, tokenSend, setTokenS
         await transferToken({ wallet: myWallet, from: account.address, to, value, decimals: tokenSend.decimals, tokenAddress: tokenSend.token_address });
         setTransferLoading(false);
         setTransferFee(undefined);
+        const tokenList = await getTokenList(address);
+        setTokens(tokenList);
         console.log('success transfer');
         setTransferSuccess(true);
       }, 0.01);
