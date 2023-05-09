@@ -31,6 +31,7 @@ function Wallets({ navigation }) {
       console.log(error);
     }
   };
+
   return (
     <View style={{ ...globalStyles.container, ...globalStyles.positionRelative }}>
       <View style={styles.walletsContainer}>
@@ -41,7 +42,7 @@ function Wallets({ navigation }) {
             renderItem={({ item }) => (
               <TouchableOpacity style={styles.walletStyle} key={item.address} onPress={() => changeTarget(item)}>
                 <Text style={styles.walletName}>{item.name}</Text>
-                <Text style={styles.walletAccBal}>${item.balance}</Text>
+                <Text style={styles.walletAccBal}>{item.balance} ETH</Text>
               </TouchableOpacity>
             )}
             keyExtractor={(item) => item.address}

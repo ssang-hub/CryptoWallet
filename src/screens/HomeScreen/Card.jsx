@@ -87,7 +87,7 @@ const Card = ({ token, handleSendToken }) => {
           </LinearGradient>
         </View>
         <View>
-          <Text style={{ fontWeight: 500, fontSize: 16, color: '#CACACA', marginTop: 7 }}>{token.balance}$</Text>
+          <Text style={{ fontWeight: 500, fontSize: 16, color: '#CACACA', marginTop: 7 }}>{token.balance} {token.symbol}</Text>
         </View>
       </View>
       <View style={styles.cardCenter}>

@@ -1,19 +1,20 @@
-import { useEffect, useState, useContext } from 'react';
-import { Alert, Modal, StyleSheet, Text, Pressable, View, Dimensions, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { useContext, useEffect, useState } from 'react';
+import { ActivityIndicator, Dimensions, Modal, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 import CloseIcon from 'react-native-vector-icons/EvilIcons';
 import { useDispatch, useSelector } from 'react-redux';
-import { accountTargetSelector } from '../../store/selector';
 import walletContext from '../../context/walletContext';
+import { accountTargetSelector } from '../../store/selector';
 
+import { isAddress } from '../../main/address-validation';
 import { setAccounts } from '../../store/reducers/account.slice';
 import { setTarget } from '../../store/reducers/accountTarget.slice';
 import { accountSelector } from '../../store/selector';
-import { isAddress } from '../../main/address-validation';
 
+import ScanQRCode from '../../components/ScanQRCode';
 import { estimateETHTransferFee, transferETH } from '../../main/eth-transfer';
 import { estimateTokenTransferFee, transferToken } from '../../main/token';
-import ScanQRCode from '../../components/ScanQRCode';
+
 import { getTokenList } from '../../main/token';
 
 const windowWidth = Dimensions.get('window').width;
@@ -99,10 +100,10 @@ const sendCoinContainer = ({ modalVisible, setModalVisible, tokenSend, setTokenS
       setTransferLoading(true);
       setTimeout(async () => {
         await transferToken({ wallet: myWallet, from: account.address, to, value, decimals: tokenSend.decimals, tokenAddress: tokenSend.token_address });
+        setTokens(tokenList);
         setTransferLoading(false);
         setTransferFee(undefined);
-        const tokenList = await getTokenList(address);
-        setTokens(tokenList);
+        
         console.log('success transfer');
         setTransferSuccess(true);
       }, 0.01);
@@ -111,6 +112,7 @@ const sendCoinContainer = ({ modalVisible, setModalVisible, tokenSend, setTokenS
     }
   };
   const backToHome = () => {
+    setTo("");
     setTransferSuccess(false);
     setTransferFee(undefined);
     setGasPrice(undefined);
@@ -124,6 +126,14 @@ const sendCoinContainer = ({ modalVisible, setModalVisible, tokenSend, setTokenS
     setTo(reultScan);
     console.log(reultScan);
   };
+
+  useEffect(() => {
+    return () => {
+      setTo(""); 
+      setValue(undefined);
+    }
+  }, [])
+
   return (
     <View style={styles.centeredView}>
       <Modal
